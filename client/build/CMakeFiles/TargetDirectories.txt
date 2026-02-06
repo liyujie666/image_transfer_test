@@ -1,0 +1,3 @@
+/home/liyujie/projects_lubancat/test_image_transfer/client/build/CMakeFiles/client.dir
+/home/liyujie/projects_lubancat/test_image_transfer/client/build/CMakeFiles/edit_cache.dir
+/home/liyujie/projects_lubancat/test_image_transfer/client/build/CMakeFiles/rebuild_cache.dir

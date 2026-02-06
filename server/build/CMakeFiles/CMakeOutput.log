@@ -1,0 +1,164 @@
+The target system is: Linux - 1 - aarch64
+The host system is: Linux - 4.4.0-19041-Microsoft - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++ 
+Build flags: ;-march=armv8-a+fp+simd;-march=armv8-a+fp+simd
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/3.22.1/CompilerIdCXX/a.out"
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_3c717/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_3c717.dir/build.make CMakeFiles/cmTC_3c717.dir/build
+gmake[1]: Entering directory '/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o
+/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++ --sysroot=/home/liyujie/lubancat/sysroot   -march=armv8-a+fp+simd -march=armv8-a+fp+simd    -v -I/home/liyujie/lubancat/sysroot/usr/include -isystem/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu -std=gnu++14 -o CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++
+Target: aarch64-linux-gnu
+Configured with: ../configure --prefix= --target=aarch64-linux-gnu --enable-languages=c,c++,fortran --with-sysroot=/aarch64-linux-gnu/libc --with-build-sysroot=/build/cross/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/libc --with-arch=armv8-a+fp+simd --disable-multilib
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 11.4.0 (GCC) 
+COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/'
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/aarch64-linux-gnu/11.4.0/cc1plus -quiet -v -I /home/liyujie/lubancat/sysroot/usr/include -iprefix /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/ -isysroot /home/liyujie/lubancat/sysroot -D_GNU_SOURCE -isystem /home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_3c717.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=armv8-a+fp+simd -mlittle-endian -mabi=lp64 -std=gnu++14 -version -o /tmp/ccgUqXxL.s
+GNU C++14 (GCC) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 9.4.0, GMP version 6.1.0, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0"
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu"
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward"
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/include"
+ignoring nonexistent directory "/home/liyujie/lubancat/sysroot/usr/local/include"
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed"
+ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include"
+ignoring duplicate directory "/home/liyujie/lubancat/sysroot/usr/include"
+  as it is a non-system directory that duplicates a system directory
+#include "..." search starts here:
+#include <...> search starts here:
+ /home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include
+ /home/liyujie/lubancat/sysroot/usr/include
+End of search list.
+GNU C++14 (GCC) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 9.4.0, GMP version 6.1.0, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: f3cdd397537fa86d4aecf5864cf7cca0
+COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/'
+ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/bin/as -v -I /home/liyujie/lubancat/sysroot/usr/include -EL -march=armv8-a+fp+simd -mabi=lp64 -o CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccgUqXxL.s
+GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils) 2.38
+COMPILER_PATH=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/aarch64-linux-gnu/11.4.0/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/bin/
+LIBRARY_PATH=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/lib/../lib64/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/lib/:/home/liyujie/lubancat/sysroot/lib/:/home/liyujie/lubancat/sysroot/usr/lib/
+COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.'
+Linking CXX static library libcmTC_3c717.a
+/usr/bin/cmake -P CMakeFiles/cmTC_3c717.dir/cmake_clean_target.cmake
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c717.dir/link.txt --verbose=1
+/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-ar qc libcmTC_3c717.a CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o
+/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-ranlib libcmTC_3c717.a
+gmake[1]: Leaving directory '/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed]
+    add: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include]
+    add: [/home/liyujie/lubancat/sysroot/usr/include]
+  end of search list found
+  collapse include dir [/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu] ==> [/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0/backward]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/lib/gcc/aarch64-linux-gnu/11.4.0/include]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed]
+  collapse include dir [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include] ==> [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include]
+  collapse include dir [/home/liyujie/lubancat/sysroot/usr/include] ==> [/home/liyujie/lubancat/sysroot/usr/include]
+  implicit include dirs: [/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include/c++/11.4.0/backward;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/lib/gcc/aarch64-linux-gnu/11.4.0/include;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed;/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/include;/home/liyujie/lubancat/sysroot/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(aarch64-linux-gnu-ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_3c717/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_3c717.dir/build.make CMakeFiles/cmTC_3c717.dir/build]
+  ignore line: [gmake[1]: Entering directory '/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++ --sysroot=/home/liyujie/lubancat/sysroot   -march=armv8-a+fp+simd -march=armv8-a+fp+simd    -v -I/home/liyujie/lubancat/sysroot/usr/include -isystem/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu -std=gnu++14 -o CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++]
+  ignore line: [Target: aarch64-linux-gnu]
+  ignore line: [Configured with: ../configure --prefix= --target=aarch64-linux-gnu --enable-languages=c c++ fortran --with-sysroot=/aarch64-linux-gnu/libc --with-build-sysroot=/build/cross/aarch64-linux-gnu-11.4.0-64/aarch64-linux-gnu/libc --with-arch=armv8-a+fp+simd --disable-multilib]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib]
+  ignore line: [gcc version 11.4.0 (GCC) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/']
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/aarch64-linux-gnu/11.4.0/cc1plus -quiet -v -I /home/liyujie/lubancat/sysroot/usr/include -iprefix /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/ -isysroot /home/liyujie/lubancat/sysroot -D_GNU_SOURCE -isystem /home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_3c717.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=armv8-a+fp+simd -mlittle-endian -mabi=lp64 -std=gnu++14 -version -o /tmp/ccgUqXxL.s]
+  ignore line: [GNU C++14 (GCC) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.1.0  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/include"]
+  ignore line: [ignoring nonexistent directory "/home/liyujie/lubancat/sysroot/usr/local/include"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/../../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include"]
+  ignore line: [ignoring duplicate directory "/home/liyujie/lubancat/sysroot/usr/include"]
+  ignore line: [  as it is a non-system directory that duplicates a system directory]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/aarch64-linux-gnu]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include/c++/11.4.0/backward]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/include-fixed]
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/include]
+  ignore line: [ /home/liyujie/lubancat/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++14 (GCC) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.1.0  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: f3cdd397537fa86d4aecf5864cf7cca0]
+  ignore line: [COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/']
+  ignore line: [ /home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/bin/as -v -I /home/liyujie/lubancat/sysroot/usr/include -EL -march=armv8-a+fp+simd -mabi=lp64 -o CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccgUqXxL.s]
+  ignore line: [GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils) 2.38]
+  ignore line: [COMPILER_PATH=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/aarch64-linux-gnu/11.4.0/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../libexec/gcc/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/bin/]
+  ignore line: [LIBRARY_PATH=/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/lib/../lib64/:/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/../lib/gcc/aarch64-linux-gnu/11.4.0/../../../../aarch64-linux-gnu/lib/:/home/liyujie/lubancat/sysroot/lib/:/home/liyujie/lubancat/sysroot/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-march=armv8-a+fp+simd' '-v' '-I' '/home/liyujie/lubancat/sysroot/usr/include' '-isystem' '/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu' '-std=gnu++14' '-o' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.']
+  ignore line: [Linking CXX static library libcmTC_3c717.a]
+  ignore line: [/usr/bin/cmake -P CMakeFiles/cmTC_3c717.dir/cmake_clean_target.cmake]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c717.dir/link.txt --verbose=1]
+  ignore line: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-ar qc libcmTC_3c717.a CMakeFiles/cmTC_3c717.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-ranlib libcmTC_3c717.a]
+  ignore line: [gmake[1]: Leaving directory '/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/CMakeTmp']
+  ignore line: []
+  ignore line: []
+  implicit libs: []
+  implicit objs: []
+  implicit dirs: []
+  implicit fwks: []
+
+

@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/liyujie/projects_lubancat/test_image_transfer/client/build",
+  "command": "/usr/bin/g++ -I/home/liyujie/projects_lubancat/test_image_transfer/client -isystem /usr/local/include/opencv4 -g -std=gnu++14 -o CMakeFiles/client.dir/client.cpp.o -c /home/liyujie/projects_lubancat/test_image_transfer/client/client.cpp",
+  "file": "/home/liyujie/projects_lubancat/test_image_transfer/client/client.cpp"
+},
+{
+  "directory": "/home/liyujie/projects_lubancat/test_image_transfer/client/build",
+  "command": "/usr/bin/g++ -I/home/liyujie/projects_lubancat/test_image_transfer/client -isystem /usr/local/include/opencv4 -g -std=gnu++14 -o CMakeFiles/client.dir/utils/tcp_helper.cpp.o -c /home/liyujie/projects_lubancat/test_image_transfer/client/utils/tcp_helper.cpp",
+  "file": "/home/liyujie/projects_lubancat/test_image_transfer/client/utils/tcp_helper.cpp"
+},
+{
+  "directory": "/home/liyujie/projects_lubancat/test_image_transfer/client/build",
+  "command": "/usr/bin/g++ -I/home/liyujie/projects_lubancat/test_image_transfer/client -isystem /usr/local/include/opencv4 -g -std=gnu++14 -o CMakeFiles/client.dir/utils/zmq_helper.cpp.o -c /home/liyujie/projects_lubancat/test_image_transfer/client/utils/zmq_helper.cpp",
+  "file": "/home/liyujie/projects_lubancat/test_image_transfer/client/utils/zmq_helper.cpp"
+}
+]

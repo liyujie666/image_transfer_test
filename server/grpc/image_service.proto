@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package image;
+
+enum ImageEncodeType {
+  RAW = 0;
+  JPEG = 1;
+  PNG = 2;
+}
+
+service ImageService {
+  rpc GetImage (ImageRequest) returns (ImageResponse);
+}
+
+message ImageRequest {
+  ImageEncodeType encode_type = 1;
+}
+
+message ImageResponse {
+  bytes image_data = 1;
+  int32 width = 2;
+  int32 height = 3;
+  int32 channels = 4;
+  ImageEncodeType encode_type = 5;
+}
