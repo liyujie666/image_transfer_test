@@ -45,6 +45,7 @@ public:
     int init_capture(int width, int height);
     int capture_frame(std::vector<uint8_t>& out_nv12);
     int capture_frame(AVFrame* out_frame);
+    int capture_frame(cv::Mat& out_nv12);
     void release_capture();
 
     // 编码

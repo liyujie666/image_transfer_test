@@ -3,13 +3,13 @@
     "configurations": [
         {
             "name": "Linux-arm64-cross",
-            "compilerPath": "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-g++",
+            "compilerPath": "/usr/bin/aarch64-linux-gnu-g++",
             "cStandard": "c11",
-            "cppStandard": "c++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-arm64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/liyujie/3rdparty/aarch64/ffmpeg/rockchip/include",
+                "/home/liyujie/3rdparty/aarch64/ffmpeg/include",
                 "/home/liyujie/lubancat/sysroot/usr/include",
                 "/home/liyujie/lubancat/sysroot/usr/include/aarch64-linux-gnu",
                 "/home/liyujie/3rdparty/aarch64/opencv/4.12.0/include/opencv4",
@@ -17,7 +17,9 @@
                 "/home/liyujie/3rdparty/x86/zmq/include",
                 "/home/liyujie/3rdparty/aarch64/zmq/include",
                 "/home/liyujie/3rdparty/aarch64/rga/include",
-                "/home/liyujie/3rdparty/aarch64/mpp/include"
+                "/home/liyujie/3rdparty/aarch64/mpp/include",
+                "/home/liyujie/3rdparty/x86/msgPack/include",
+                "/home/liyujie/3rdparty/aarch64/msgpack/include"
             ],
             "defines": [],
             "compilerArgs": []

@@ -135,6 +135,6 @@ void runZMQClient(const std::string& server_ip, int port) {
 int main() {
 
     runTcpClient(SERVER_IP_RK3576.c_str(),TCP_PORT);
-    //runZMQClient(SERVER_IP.c_str(),ZMQ_PORT);
+    //runZMQClient(SERVER_IP_RK3576.c_str(),ZMQ_PORT);
     return 0;
 }

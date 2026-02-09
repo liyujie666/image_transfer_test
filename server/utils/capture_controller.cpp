@@ -1,0 +1,317 @@
+#include "capture_controller.h"
+#include "logger.h"
+#include <unistd.h>
+CaptureController::CaptureController(const std::string& dev_node)
+    : dev_node_(dev_node),is_multiple_capturing_(false)
+{
+}
+CaptureController::~CaptureController()
+{
+    release();
+}
+
+int CaptureController::init(const CameraConfig& config){
+
+    release();
+    cur_config_ = config;
+
+    if(init_devices() < 0) return -1;
+    if(init_encoders() < 0) return -1;
+    return 0;
+    
+}
+
+int CaptureController::init_devices()
+{
+    switch (cur_config_.cap_device)
+    {
+    case CaptureDevice::V4L2:
+        v4l2_cap_ = std::make_unique<V4L2Capture>(dev_node_,cur_config_.width,cur_config_.height);
+        if(!v4l2_cap_->init()) return -1;
+        break;
+    case CaptureDevice::OPENCV:
+        opencv_cap_ = std::make_unique<cv::VideoCapture>(dev_node_,cv::CAP_V4L2);
+        if(!opencv_cap_->isOpened()){
+            LOG_ERROR("Failed to open device by opencv: %s",dev_node_);
+            return -1;
+        }
+        opencv_cap_->set(cv::CAP_PROP_FRAME_WIDTH, cur_config_.width);
+        opencv_cap_->set(cv::CAP_PROP_FRAME_HEIGHT, cur_config_.height);
+        break;
+    case CaptureDevice::FFMPEG:
+        ffmpeg_cap_ = std::make_unique<FFmpegUtils>(dev_node_);
+        if(ffmpeg_cap_->init_capture(cur_config_.width,cur_config_.height) < 0) return -1;
+        break;
+    default:
+        LOG_ERROR("Unsupported capture device");
+        break;
+    }
+
+    return 0;
+}
+
+int CaptureController::init_encoders(){
+    int ret;
+    switch (cur_config_.encode_type)
+    {
+    case EncodeType::FFMPEG:{
+        ffmpeg_enc_ = std::make_unique<FFmpegUtils>(dev_node_);
+
+        CodecParams params;
+        params.width = cur_config_.width;
+        params.height = cur_config_.height; 
+        params.pixfmt = AV_PIX_FMT_NV12;      
+        params.codec_type = CodecType::MJPEG_RKMPP;
+        if(ffmpeg_enc_->init_encoder(params) < 0) return -1;
+        break;
+    }
+    case EncodeType::OPENCV:{
+        break;
+    }
+    default:
+        LOG_ERROR("Unsupported encode type");
+        break;
+    }
+
+    return 0;
+}
+
+int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, ImageMeta& meta)
+{
+    cv::Mat src_frame;
+    int ret;
+
+    // 采集
+    switch (cur_config_.cap_device)
+    {
+    case CaptureDevice::V4L2:
+        if(capture_single_by_v4l2(src_frame) < 0) return -1;break;
+    case CaptureDevice::OPENCV:
+        if(capture_single_by_opencv(src_frame) < 0) return -1;break;
+    case CaptureDevice::FFMPEG:
+        if(capture_single_by_ffmpeg(src_frame) < 0) return -1;break;
+    default:
+        LOG_ERROR("Unsupported capture device");
+        break;
+    }
+    LOG_INFO("capture frame success");
+    // 编码
+    switch (cur_config_.encode_type)
+    {
+    case EncodeType::FFMPEG:
+        if(encode_by_ffmpeg(src_frame,dst_frame,meta) < 0) return -1;break;
+    case EncodeType::OPENCV:
+        if(encode_by_opencv(src_frame,dst_frame,meta) < 0) return -1;break;
+    default:
+        LOG_ERROR("Unsupported encode type");
+        break;
+    }
+    LOG_INFO("encode frame success");
+    return 0;
+
+}
+int CaptureController::start_capture_multiple()
+{
+    if(is_multiple_capturing_){
+        LOG_WARN("multiple capture already running");
+        return 0;
+    }
+
+    if (cur_config_.width == 0 || cur_config_.height == 0) {
+        LOG_ERROR("CaptureController not initialized");
+        return -1;
+    }
+
+    if (pub_stream_id_ == 0) {
+        LOG_ERROR("RPC pub stream ID not set");
+        return -1;
+    }
+
+    is_multiple_capturing_ = true;
+    capture_multiple_thread_ = std::thread(&CaptureController::capture_multiple_loop,this);
+    LOG_INFO("Continuous capture started (dev: %s, %dx%d, fps: %d)", 
+             dev_node_.c_str(), cur_config_.width, cur_config_.height, cur_config_.fps);
+    return 0;
+}
+
+void CaptureController::stop_capture_multiple()
+{
+    if (!is_multiple_capturing_) {
+        return;
+    }
+
+    is_multiple_capturing_ = false;
+    if (capture_multiple_thread_.joinable()) {
+        capture_multiple_thread_.join();
+    }
+    LOG_INFO("Continuous capture stopped (dev: %s)", dev_node_.c_str());
+}
+
+void CaptureController::release()
+{
+    stop_capture_multiple();
+
+    if(v4l2_cap_) {
+        v4l2_cap_->close();
+        v4l2_cap_.reset(); 
+    }
+    if(opencv_cap_) {
+        opencv_cap_->release();  
+        opencv_cap_.reset();
+    }
+    if(ffmpeg_cap_) {
+        ffmpeg_cap_->release_all();
+        ffmpeg_cap_.reset();
+    }
+    if(ffmpeg_enc_) {
+        ffmpeg_enc_->release_all();
+        ffmpeg_enc_.reset();
+    }
+    
+}
+
+
+int CaptureController::capture_single_by_opencv(cv::Mat& src_frame){
+    if(!opencv_cap_) return -1;
+
+    *opencv_cap_ >> src_frame;
+    if(src_frame.empty()){
+        LOG_ERROR("Failed to capture frame by opencv");
+        return -1;
+    }
+
+    return 0;
+}
+int CaptureController::capture_single_by_v4l2(cv::Mat& src_frame){
+    if(!v4l2_cap_) return -1;
+
+    if(!v4l2_cap_->captureFrame(src_frame)){
+        LOG_ERROR("Failed to capture frame by V4L2");
+        return -1;
+    }
+
+    return 0;
+}
+int CaptureController::capture_single_by_ffmpeg(cv::Mat& src_frame){
+    if(!ffmpeg_cap_) return -1;
+
+    if(ffmpeg_cap_->capture_frame(src_frame) < 0){
+        LOG_ERROR("Failed to capture frame by FFmpeg");
+        return -1;
+    }
+
+    return 0;
+}
+
+int CaptureController::encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta){
+    if(!ffmpeg_enc_) return -1;
+    const int max_retry = 5;        
+    const int retry_delay_us = 5000;
+    int retry_cnt = 0;
+    AVPacket* pkt = nullptr;
+    int ret = 0;
+
+    while (retry_cnt < max_retry) {
+
+        ret = ffmpeg_enc_->encode(src_frame, &pkt);
+      
+        if (ret == 0 && pkt != nullptr) {
+            break;
+        }
+       
+        if (ret == AVERROR(EAGAIN)) {
+            retry_cnt++;
+            usleep(retry_delay_us);
+            LOG_WARN("编码器忙，重试 %d/%d",retry_cnt,max_retry);
+            continue;
+        }
+
+        LOG_ERROR("帧编码错误，错误码：%d",ret);
+        break;
+    }
+
+    // copy data to vector
+    if (pkt && pkt->size > 0) {
+        dst_frame.resize(pkt->size);
+        memcpy(dst_frame.data(), pkt->data, pkt->size);
+        LOG_INFO("pkt size: %d",pkt->size);
+        meta.cols = src_frame.cols;
+        meta.rows = src_frame.rows * 2 / 3;
+        meta.comp_data_len = pkt->size;
+        av_packet_free(&pkt);
+        return 0;
+    }
+
+    return -1;
+
+}
+int CaptureController::encode_by_opencv(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta){
+    cv::Mat encode_img = src_frame.clone();
+    std::vector<int> encode_params;
+
+    if(COMPRESS_FORMAT == 1) {
+        encode_params = {cv::IMWRITE_JPEG_QUALITY, COMPRESS_QUALITY};
+    } else {
+        encode_params = {cv::IMWRITE_PNG_COMPRESSION, COMPRESS_QUALITY/10}; 
+    }
+    bool ret = cv::imencode(COMPRESS_FORMAT==1 ? ".jpg" : ".png", encode_img, dst_frame, encode_params);
+    if(ret) {
+        meta.is_compressed = true;
+        meta.compress_type = COMPRESS_FORMAT;
+        meta.cols = src_frame.cols;
+        meta.rows = src_frame.rows;
+        meta.comp_data_len = dst_frame.size();
+    }
+    return ret;
+}
+
+void CaptureController::capture_multiple_loop()
+{
+    std::vector<uint8_t> frame_data;
+    ImageMeta frame_meta;
+    // 帧间隔）
+    int frame_interval_ms = 1000 / cur_config_.fps;
+
+    while (is_multiple_capturing_) {
+        std::lock_guard<std::mutex> lock(capture_mtx_);
+        
+        if (capture_frame_single(frame_data, frame_meta) != 0) {
+            LOG_ERROR("Continuous capture single frame failed, retry...");
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            continue;
+        }
+
+        // 发布帧到RPC PUB
+        if (!publish_frame(frame_data, frame_meta)) {
+            LOG_WARN("Publish frame failed, continue...");
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(frame_interval_ms));
+    }
+}
+
+
+bool CaptureController::publish_frame(const std::vector<uint8_t>& frame_data, const ImageMeta& meta)
+{
+    if (frame_data.empty() || pub_stream_id_ == 0) {
+        return false;
+    }
+
+    try {
+        RpcImageResponse img_resp;
+        img_resp.meta = meta;
+        img_resp.image_data = frame_data;
+
+        msgpack::sbuffer buffer;
+        msgpack::pack(buffer, img_resp);
+
+        return hub::RpcEngine::getInstance().publish(
+            pub_stream_id_, 
+            buffer.data(), 
+            buffer.size()
+        );
+    } catch (const std::exception& e) {
+        LOG_ERROR("Publish frame error: %s", e.what());
+        return false;
+    }
+}

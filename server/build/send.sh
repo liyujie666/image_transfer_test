@@ -1,2 +1,2 @@
 #!/bin/bash
-scp server cat@192.168.23.36:~/lyj_demo/image_transfer_test
+scp server linaro@192.168.23.99:/home/linaro/lyj_demo/tcp_test/bin

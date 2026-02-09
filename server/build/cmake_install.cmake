@@ -1,8 +1,8 @@
-# Install script for directory: /home/liyujie/projects_lubancat/test_image_transfer/server
+# Install script for directory: /home/liyujie/QtProjects/test_image_transfer/server
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/liyujie/projects_lubancat/test_image_transfer/server/build/install_root")
+  set(CMAKE_INSTALL_PREFIX "/home/liyujie/QtProjects/test_image_transfer/server/build/install_root")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -37,23 +37,18 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "TRUE")
 endif()
 
-# Set default install directory permissions.
-if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-objdump")
-endif()
-
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/liyujie/projects_lubancat/test_image_transfer/server/build/server")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/liyujie/QtProjects/test_image_transfer/server/build/server")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/server" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/server")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/home/liyujie/lubancat/toolchain/aarch64-linux-gnu-11.4.0-64/bin/aarch64-linux-gnu-strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/server")
+      execute_process(COMMAND "/usr/bin/aarch64-linux-gnu-strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/server")
     endif()
   endif()
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/ffmpeg/rockchip/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/ffmpeg/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -80,5 +75,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/liyujie/projects_lubancat/test_image_transfer/server/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/liyujie/QtProjects/test_image_transfer/server/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

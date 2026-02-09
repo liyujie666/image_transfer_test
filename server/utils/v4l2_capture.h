@@ -10,9 +10,9 @@
 class V4L2Capture{
 public:
     V4L2Capture(const std::string& dev_node = "/dev/video31",
-                uint32_t pixel_format = V4L2_PIX_FMT_NV12,
                 int width = 2400,
                 int height = 2000,
+                uint32_t pixel_format = V4L2_PIX_FMT_NV12,
                 int buffer_count = 4);
     ~V4L2Capture();
 

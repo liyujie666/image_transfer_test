@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 
 static std::once_flag g_av_flag;
 static void av_register_all_devices() {
@@ -122,6 +123,64 @@ int FFmpegUtils::capture_frame(std::vector<uint8_t>& out_nv12) {
     av_packet_unref(_pkt_cap);
     return 0;
 }
+
+
+int FFmpegUtils::capture_frame(cv::Mat& out_nv12) {
+    if (!_fmt_ctx || !_pkt_cap) return -1;
+
+    TimerUtil timer;
+    timer.start();
+    
+    int ret = av_read_frame(_fmt_ctx, _pkt_cap);
+    if (!check_ret(ret, "读取帧失败")) {
+        return ret;
+    }
+
+
+    if (_pkt_cap->stream_index != _video_idx) {
+        av_packet_unref(_pkt_cap);
+        return -2;
+    }
+    //captureTimer.end("Capture frame by v4l2");
+
+    if (_cap_w <= 0 || _cap_h <= 0) {
+        av_packet_unref(_pkt_cap);
+        return -3;  // 宽高无效的错误码
+    }
+
+
+    const int y_size = _cap_w * _cap_h;
+    const int nv12_total_size = y_size * 3 / 2;
+
+    out_nv12 = cv::Mat(cv::Size(_cap_w, _cap_h * 3 / 2), CV_8UC1);
+    if (out_nv12.empty()) {
+        av_packet_unref(_pkt_cap);
+        return -4;  // Mat创建失败的错误码
+    }
+
+    ret = av_image_fill_arrays(
+        _frame_raw->data, _frame_raw->linesize,
+        _pkt_cap->data, AV_PIX_FMT_NV12,
+        _cap_w, _cap_h, 32
+    );
+    if (ret < 0) {
+        av_packet_unref(_pkt_cap);
+        return ret;
+    }
+
+    // Y
+    memcpy(out_nv12.data, _frame_raw->data[0], y_size);
+    // UV
+    memcpy(out_nv12.data + y_size, _frame_raw->data[1], y_size / 2);
+
+    timer.end("Capture frame by ffmpeg");
+    // 释放资源（原逻辑不变）
+    av_frame_unref(_frame_raw);
+    av_packet_unref(_pkt_cap);
+    
+    return 0;
+}
+
 
 int FFmpegUtils::capture_frame(AVFrame* out_frame){
     if (!_fmt_ctx || !_pkt_cap || !out_frame) return -1;

@@ -1,4 +1,5 @@
 #include "v4l2_capture.h"
+#include "timer_util.h"
 #include "logger.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -17,11 +18,11 @@ static inline uint64_t now_ns()
     return uint64_t(ts.tv_sec) * 1000000000ULL + uint64_t(ts.tv_nsec);
 }
 
-V4L2Capture::V4L2Capture(const std::string& dev_node, uint32_t pixel_format,int width, int height, int buffer_count)
+V4L2Capture::V4L2Capture(const std::string& dev_node, int width, int height,uint32_t pixel_format, int buffer_count)
     : m_dev_node(dev_node),
-      m_pixel_format(pixel_format),
       m_width(width),
       m_height(height),
+      m_pixel_format(pixel_format),
       m_buffer_count(buffer_count),
       m_fd(-1),
       m_is_initialized(false) {
@@ -199,6 +200,9 @@ bool V4L2Capture::captureFrame(cv::Mat& frame_nv12) {
         return false;
     }
 
+    TimerUtil timer;
+    timer.start();
+
     // 出队取帧
     struct v4l2_buffer buf = {0};
     struct v4l2_plane planes[VIDEO_MAX_PLANES] = {0};
@@ -218,11 +222,8 @@ bool V4L2Capture::captureFrame(cv::Mat& frame_nv12) {
         total_size += buf.m.planes[p].bytesused;
     }
 
-    frame_nv12.create(m_height * 3 / 2, m_width, CV_8UC1);
-    if (frame_nv12.empty()) {
-        LOG_ERROR("创建NV12 Mat失败");
-        ioctl(m_fd, VIDIOC_QBUF, &buf);
-        return false;
+    if (frame_nv12.empty() || frame_nv12.rows != m_height * 3 / 2 || frame_nv12.cols != m_width) {
+        frame_nv12.create(m_height * 3 / 2, m_width, CV_8UC1);
     }
 
     // 拼接NV12数据到Mat的内存中
@@ -233,6 +234,7 @@ bool V4L2Capture::captureFrame(cv::Mat& frame_nv12) {
         offset += buf.m.planes[p].bytesused;
     }
 
+    timer.end("Capture frame by v4l2");
     // 缓冲区入队，继续采集
     if (ioctl(m_fd, VIDIOC_QBUF, &buf) < 0) {
         LOG_ERROR("VIDIOC_QBUF failed"); 

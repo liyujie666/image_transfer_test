@@ -5,6 +5,7 @@
 #include "utils/zmq_helper.h"
 #include "utils/image_utils.h"
 #include "utils/ffmpeg_utils.h"
+#include "utils/rpc_service.h"
 #include "utils/logger.h"
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -54,7 +55,7 @@ void runTCPServer(const std::vector<uchar>& encoded_data,const ImageMeta& meta) 
 void runZMQServer(const std::vector<uchar>& encoded_data,const ImageMeta& meta) {
 
     std::unique_ptr<ZMQHelper> zmqServer = std::make_unique<ZMQHelper>();
-    std::string zmqBindAddr = "tcp://" + SERVER_IP + ":" + std::to_string(ZMQ_PORT);
+    std::string zmqBindAddr = "tcp://" + SERVER_IP_RK3588 + ":" + std::to_string(ZMQ_PORT);
     zmq::socket_t repSocket = zmqServer->create_rep_socket(zmqBindAddr);
 
     while (true) {
@@ -241,31 +242,37 @@ int main(int argc, char* argv[]) {
     
     const char* imgPath = argv[1];
     const char* devNode = argv[2];
-    std::vector<uchar> encoded_data;
-    ImageMeta meta{};
+//     std::vector<uchar> encoded_data;
+//     ImageMeta meta{};
     
-    // process
-#if READ_BY_LOCAL_IMAGE
-    if(!processByImage(imgPath,encoded_data,meta)){
-        return -1;
-    }
-#elif READ_BY_CAMERA
-    if(!processByCamera(devNode,encoded_data,meta)){
-        return -1;
-    }
-#elif READ_BY_FFMPEG
-    if(!captureAndEncodeByFFmpeg(devNode,encoded_data,meta,1)){
-        return -1;
-    }
-#endif
+//     // process
+// #if READ_BY_LOCAL_IMAGE
+//     if(!processByImage(imgPath,encoded_data,meta)){
+//         return -1;
+//     }
+// #elif READ_BY_CAMERA
+//     if(!processByCamera(devNode,encoded_data,meta)){
+//         return -1;
+//     }
+// #elif READ_BY_FFMPEG
+//     if(!captureAndEncodeByFFmpeg(devNode,encoded_data,meta,1)){
+//         return -1;
+//     }
+// #endif
 
 
-    // send image
-#if TRANSFER_BY_TCP
-    runTCPServer(encoded_data,meta);
-#elif TRANSFER_BY_ZMQ
-    runZMQServer(encoded_data,meta);
-#endif
+//     // send image
+// #if TRANSFER_BY_TCP
+//     runTCPServer(encoded_data,meta);
+// #elif TRANSFER_BY_ZMQ
+//     runZMQServer(encoded_data,meta);
+// #endif
+    RpcService service(devNode,imgPath);
+
+    if(service.init() < 0) return -1;
+
+    std::cin.get();
+    service.close();
 
     return 0;
 }

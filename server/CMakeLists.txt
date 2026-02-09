@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
-set(CMAKE_TOOLCHAIN_FILE /home/liyujie/3rdparty/toolchain.cmake)
+set(CMAKE_TOOLCHAIN_FILE /home/liyujie/3rdparty/toolchain/toolchain_rk3588.cmake)
 project(server LANGUAGES CXX)
+add_compile_definitions(MSGPACK_NO_BOOST)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE SRC_FILES
@@ -26,14 +27,13 @@ set(ZMQ_INCLUDE_DIR ${ZMQ_ROOT}/include)
 set(ZMQ_LIB_DIR     ${ZMQ_ROOT}/lib)
 
 # ffmpeg_rockchip
-set(FFMPEG_VERSION rockchip)
-set(FFMPEG_ROOT ${AARCH64_SDK_ROOT}/ffmpeg/${FFMPEG_VERSION})
+set(FFMPEG_ROOT ${AARCH64_SDK_ROOT}/ffmpeg)
 set(FFMPEG_INCLUDE_DIR ${FFMPEG_ROOT}/include)
 set(FFMPEG_LIB_DIR ${FFMPEG_ROOT}/lib)
 
 # rga
 set(RGA_ROOT ${AARCH64_SDK_ROOT}/rga)
-set(RGA_INCLUDE_DIR ${RGA_ROOT}/include)
+set(RGA_INCLUDE_DIR ${RGA_ROOT}/include/rga)
 set(RGA_LIB_DIR     ${RGA_ROOT}/lib)
 
 
@@ -42,6 +42,11 @@ set(MPP_ROOT ${AARCH64_SDK_ROOT}/mpp)
 set(MPP_INCLUDE_DIR ${MPP_ROOT}/include)
 set(MPP_LIB_DIR     ${MPP_ROOT}/lib)
 
+# msgpack
+set(MSGPACK_ROOT ${AARCH64_SDK_ROOT}/msgpack)
+set(MSGPACK_INCLUDE_DIR ${MSGPACK_ROOT}/include)
+
+
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${FFMPEG_INCLUDE_DIR}
@@ -49,6 +54,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${ZMQ_INCLUDE_DIR}
     ${RGA_INCLUDE_DIR}
     ${MPP_INCLUDE_DIR}
+    ${MSGPACK_INCLUDE_DIR}
     
 )
 

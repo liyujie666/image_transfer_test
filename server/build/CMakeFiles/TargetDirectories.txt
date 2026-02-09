@@ -1,7 +1,7 @@
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/server.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/edit_cache.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/rebuild_cache.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/list_install_components.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/install.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/install/local.dir
-/home/liyujie/projects_lubancat/test_image_transfer/server/build/CMakeFiles/install/strip.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/install/strip.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/install.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/list_install_components.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/rebuild_cache.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/edit_cache.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/install/local.dir
+/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir
