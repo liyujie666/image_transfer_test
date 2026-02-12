@@ -48,23 +48,23 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/ffmpeg/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/ffmpeg/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/opencv/4.12.0/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/opencv/4.12.0/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/zmq/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/zmq/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/mpp/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/mpp/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/3rdparty/aarch64/rga/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE DIRECTORY FILES "/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/rga/lib/" FILES_MATCHING REGEX "/[^/]*\\.so[^/]*$")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

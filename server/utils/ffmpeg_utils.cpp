@@ -9,6 +9,7 @@
 static std::once_flag g_av_flag;
 static void av_register_all_devices() {
     avdevice_register_all();
+    avformat_network_init();
     av_log_set_level(AV_LOG_ERROR);
 }
 
@@ -73,9 +74,13 @@ int FFmpegUtils::init_capture(int width, int height) {
     }
 
     // 分配缓冲
+    _src_frame_mat = cv::Mat(cv::Size(_cap_w, _cap_h * 3 / 2), CV_8UC1);
     _pkt_cap = av_packet_alloc();
     _frame_raw = av_frame_alloc();
     if (!_pkt_cap || !_frame_raw) goto fail;
+    _frame_raw->width = _cap_w;
+    _frame_raw->height = _cap_h;
+    _frame_raw->format = AV_PIX_FMT_NV12;
 
     std::cout << "采集模块初始化成功: " << width << "x" << height << std::endl;
     return 0;
@@ -88,8 +93,8 @@ fail:
 int FFmpegUtils::capture_frame(std::vector<uint8_t>& out_nv12) {
     if (!_fmt_ctx || !_pkt_cap) return -1;
 
-    TimerUtil captureTimer;
-    captureTimer.start();
+    TimerUtil timer;
+    timer.start();
     int ret = av_read_frame(_fmt_ctx, _pkt_cap);
     if (!check_ret(ret, "读取帧失败")) return ret;
 
@@ -97,7 +102,6 @@ int FFmpegUtils::capture_frame(std::vector<uint8_t>& out_nv12) {
         av_packet_unref(_pkt_cap);
         return -2;
     }
-    captureTimer.end("Capture frame by v4l2");
 
     // 计算NV12大小
     const int y_size = _cap_w * _cap_h;
@@ -119,6 +123,7 @@ int FFmpegUtils::capture_frame(std::vector<uint8_t>& out_nv12) {
     memcpy(out_nv12.data(), _frame_raw->data[0], y_size);
     memcpy(out_nv12.data() + y_size, _frame_raw->data[1], uv_size);
 
+    timer.end("[Capture] [FFmpeg]");
     av_frame_unref(_frame_raw);
     av_packet_unref(_pkt_cap);
     return 0;
@@ -128,7 +133,7 @@ int FFmpegUtils::capture_frame(std::vector<uint8_t>& out_nv12) {
 int FFmpegUtils::capture_frame(cv::Mat& out_nv12) {
     if (!_fmt_ctx || !_pkt_cap) return -1;
 
-    TimerUtil timer;
+    TimerUtil timer,testTimer;
     timer.start();
     
     int ret = av_read_frame(_fmt_ctx, _pkt_cap);
@@ -141,95 +146,102 @@ int FFmpegUtils::capture_frame(cv::Mat& out_nv12) {
         av_packet_unref(_pkt_cap);
         return -2;
     }
-    //captureTimer.end("Capture frame by v4l2");
 
     if (_cap_w <= 0 || _cap_h <= 0) {
         av_packet_unref(_pkt_cap);
         return -3;  // 宽高无效的错误码
     }
 
-
+    testTimer.start();
     const int y_size = _cap_w * _cap_h;
     const int nv12_total_size = y_size * 3 / 2;
 
-    out_nv12 = cv::Mat(cv::Size(_cap_w, _cap_h * 3 / 2), CV_8UC1);
+    if (_src_frame_mat.empty() || 
+            _src_frame_mat.cols != _cap_w || 
+            _src_frame_mat.rows != _cap_h * 3 / 2) {
+            // 首次/尺寸变化时重新分配
+            _src_frame_mat = cv::Mat(cv::Size(_cap_w, _cap_h * 3 / 2), CV_8UC1);
+        }
+
+    out_nv12 = _src_frame_mat;
     if (out_nv12.empty()) {
-        av_packet_unref(_pkt_cap);
-        return -4;  // Mat创建失败的错误码
+            av_packet_unref(_pkt_cap);
+            return -4;
     }
 
-    ret = av_image_fill_arrays(
-        _frame_raw->data, _frame_raw->linesize,
-        _pkt_cap->data, AV_PIX_FMT_NV12,
-        _cap_w, _cap_h, 32
-    );
-    if (ret < 0) {
+    if (_pkt_cap->size >= nv12_total_size) {
+        memcpy(out_nv12.data, _pkt_cap->data, nv12_total_size);
+    } else {
+        LOG_ERROR("NV12数据长度不足: pkt_size=%d, need=%d", _pkt_cap->size, nv12_total_size);
         av_packet_unref(_pkt_cap);
-        return ret;
+        return -5;
     }
 
-    // Y
-    memcpy(out_nv12.data, _frame_raw->data[0], y_size);
-    // UV
-    memcpy(out_nv12.data + y_size, _frame_raw->data[1], y_size / 2);
+    timer.end("[Capture] [FFmpeg]");
 
-    timer.end("Capture frame by ffmpeg");
-    // 释放资源（原逻辑不变）
-    av_frame_unref(_frame_raw);
     av_packet_unref(_pkt_cap);
     
     return 0;
 }
 
 
-int FFmpegUtils::capture_frame(AVFrame* out_frame){
-    if (!_fmt_ctx || !_pkt_cap || !out_frame) return -1;
+int FFmpegUtils::capture_frame() {
+    if (!_fmt_ctx || !_pkt_cap || !_frame_raw) {
+        std::cerr << "采集模块未初始化（_fmt_ctx/_pkt_cap/_frame_raw 为空）" << std::endl;
+        return -1;
+    }
 
-    TimerUtil captureTimer;
-    captureTimer.start();
+    TimerUtil timer;
+    timer.start();
+
     int ret = av_read_frame(_fmt_ctx, _pkt_cap);
-    if (!check_ret(ret, "读取帧失败")) return ret;
+    if (!check_ret(ret, "读取帧失败")) {
+        return ret;
+    }
 
     if (_pkt_cap->stream_index != _video_idx) {
         av_packet_unref(_pkt_cap);
         return -2;
     }
-    captureTimer.end("Capture frame by v4l2");
 
-    av_frame_unref(out_frame);
-    out_frame->width = _cap_w;
-    out_frame->height = _cap_h;
-    out_frame->format = AV_PIX_FMT_NV12;
+    av_frame_unref(_frame_raw);
 
-    ret = av_frame_get_buffer(out_frame,32);
-    if(!check_ret(ret,"分配目标帧缓存失败")){
+    _frame_raw->width  = _cap_w;
+    _frame_raw->height = _cap_h;
+    _frame_raw->format = AV_PIX_FMT_NV12; 
+
+
+    ret = av_frame_get_buffer(_frame_raw, 0);
+    if (!check_ret(ret, "分配_frame_raw 缓冲失败")) {
         av_packet_unref(_pkt_cap);
         return ret;
-    } 
+    }
 
-    // 填充帧数据
-    ret = av_image_fill_arrays(
-        _frame_raw->data, _frame_raw->linesize,
-        _pkt_cap->data, AV_PIX_FMT_NV12,
-        _cap_w, _cap_h, 32
-    );
+    uint8_t* src_data[4] = {nullptr};
+    int src_linesize[4] = {0};
+    ret = av_image_fill_arrays(src_data, src_linesize,
+                               _pkt_cap->data, AV_PIX_FMT_NV12,
+                               _cap_w, _cap_h, 1); // align=1 for source
     if (ret < 0) {
         av_packet_unref(_pkt_cap);
         return ret;
     }
 
-    const int y_size = _cap_w * _cap_h;
-    const int uv_size = y_size / 2;
-    memcpy(out_frame->data[0], _frame_raw->data[0], y_size);
-    memcpy(out_frame->data[1], _frame_raw->data[1], uv_size);
+    av_image_copy(_frame_raw->data, _frame_raw->linesize,
+                        (const uint8_t**)src_data, src_linesize,
+                        AV_PIX_FMT_NV12, _cap_w, _cap_h);
 
-    out_frame->linesize[0] = _cap_w;
-    out_frame->linesize[1] = _cap_w;
+
+    static int64_t g_pts = 0;
+    _frame_raw->pts = g_pts++;
+
+    timer.end("[Capture] [FFmpeg]");
 
     av_packet_unref(_pkt_cap);
-    av_frame_unref(_frame_raw);
+
     return 0;
 }
+
 
 void FFmpegUtils::release_capture() {
     if (_frame_raw) av_frame_free(&_frame_raw);
@@ -274,8 +286,8 @@ int FFmpegUtils::init_encoder(const CodecParams& params) {
     } else {
         _enc_ctx->framerate = {params.fps, 1};
         _enc_ctx->time_base = {1, params.fps};
-        _enc_ctx->gop_size = 120;
-        av_opt_set(_enc_ctx->priv_data, "tune", "zerolatency", 0);
+        _enc_ctx->gop_size = params.fps;
+        av_opt_set_int(_enc_ctx->priv_data, "rc_mode", 1, 0);
     }
 
     int ret = avcodec_open2(_enc_ctx, _encoder, nullptr);
@@ -321,14 +333,16 @@ int FFmpegUtils::encode(const std::vector<uint8_t>& src_frame, AVPacket** out_pk
     const int uv_size = y_size / 2;
     if (src_frame.size() != y_size + uv_size) return -2;
 
+    TimerUtil timer;
+    timer.start();
+
     av_frame_make_writable(_enc_frame);
+
     memcpy(_enc_frame->data[0], src_frame.data(), y_size);
     memcpy(_enc_frame->data[1], src_frame.data() + y_size, uv_size);
     _enc_frame->linesize[0] = _enc_params.width;
     _enc_frame->linesize[1] = _enc_params.width;
 
-    TimerUtil encodeTimer;
-    encodeTimer.start();
     int ret = avcodec_send_frame(_enc_ctx, _enc_frame);
     if (ret < 0 && ret != AVERROR(EAGAIN)) return ret;
 
@@ -344,21 +358,21 @@ int FFmpegUtils::encode(const std::vector<uint8_t>& src_frame, AVPacket** out_pk
         *out_pkt = nullptr;
         return ret;
     }
-    encodeTimer.end("encode frame by mpp");
+    timer.end("[Encode] [FFmpeg]");
     return 0;
 }
 
 int FFmpegUtils::encode(const cv::Mat& src_frame, AVPacket** out_pkt) {
     std::lock_guard<std::mutex> lock(_enc_mutex);
     if (!_enc_ctx || src_frame.empty() || !out_pkt) return -1;
+    TimerUtil timer;
+    timer.start();
 
     const int y_size = _enc_params.width * _enc_params.height;
     av_frame_make_writable(_enc_frame);
     memcpy(_enc_frame->data[0], src_frame.data, y_size);
     memcpy(_enc_frame->data[1], src_frame.data + y_size, y_size / 2);
 
-    TimerUtil encodeTimer;
-    encodeTimer.start();
     int ret = avcodec_send_frame(_enc_ctx, _enc_frame);
     if (ret < 0 && ret != AVERROR(EAGAIN)) return ret;
 
@@ -374,7 +388,7 @@ int FFmpegUtils::encode(const cv::Mat& src_frame, AVPacket** out_pkt) {
         *out_pkt = nullptr;
         return ret;
     }
-    encodeTimer.end("encode frame by mpp");
+    timer.end("[Encode] [FFmpeg]");
     return 0;
 }
 
@@ -389,8 +403,8 @@ int FFmpegUtils::encode(const AVFrame* src_frame, AVPacket** out_pkt){
         return -2;
     }
 
-    TimerUtil encodeTimer;
-    encodeTimer.start();
+    TimerUtil timer;
+    timer.start();
 
     int ret = avcodec_send_frame(_enc_ctx, src_frame);
     if (ret < 0 && ret != AVERROR(EAGAIN)) {
@@ -413,7 +427,7 @@ int FFmpegUtils::encode(const AVFrame* src_frame, AVPacket** out_pkt){
         return ret;
     }
 
-    encodeTimer.end("encode frame by mpp");
+    timer.end("[Encode] [FFmpeg]");
     return 0;
 }
 
@@ -498,6 +512,171 @@ void FFmpegUtils::release_decoder() {
     std::cout << "解码模块已释放" << std::endl;
 }
 
+
+int FFmpegUtils::init_streamer(const std::string& rtsp_url) {
+    std::lock_guard<std::mutex> lock(_rtsp_mutex);
+    if (_rtsp_fmt_ctx) {
+        std::cerr << "RTSP推流器已初始化" << std::endl;
+        return -1;
+    }
+
+    AVDictionary* opts = nullptr;
+
+    int ret = avformat_alloc_output_context2(&_rtsp_fmt_ctx, nullptr, "rtsp", rtsp_url.c_str());
+    if (!check_ret(ret, "创建RTSP格式上下文失败")) goto fail;
+ 
+    av_dict_set(&opts, "rtsp_transport", "tcp", 0);  
+    av_dict_set(&opts, "stimeout", "5000000", 0);   
+    av_dict_set(&opts, "max_delay", "500000", 0); 
+    av_dict_set(&opts, "buffer_size", "1024000", 0); // 缓冲区大小1MB
+    av_dict_set(&opts, "auto_bsf", "1", 0);
+    // 创建视频流
+    _video_stream = avformat_new_stream(_rtsp_fmt_ctx, _encoder);
+    if (!_video_stream) {
+        std::cerr << "创建视频流失败" << std::endl;
+        av_dict_free(&opts);
+        goto fail;
+    }
+
+    ret = avcodec_parameters_from_context(_video_stream->codecpar, _enc_ctx);
+    if (!check_ret(ret, "复制编码器参数失败")) {
+        av_dict_free(&opts);
+        goto fail;
+    }
+
+    //设置时间基
+    _video_stream->time_base = _enc_ctx->time_base;
+
+    if (!(_rtsp_fmt_ctx->oformat->flags & AVFMT_NOFILE)) {
+        ret = avio_open2(&_rtsp_fmt_ctx->pb, rtsp_url.c_str(), AVIO_FLAG_WRITE, nullptr, &opts);
+        if (!check_ret(ret, "打开RTSP IO失败")) {
+            av_dict_free(&opts);
+            goto fail;
+        }
+    }
+
+    // 写入RTSP头信息
+    ret = avformat_write_header(_rtsp_fmt_ctx, &opts);
+    if (!check_ret(ret, "写入RTSP头失败")) goto fail;
+
+    _frame_index = 0;
+    std::cout << "RTSP推流器初始化成功: " << rtsp_url << std::endl;
+    return 0;
+
+fail:
+    release_streamer();
+    return -1;
+}
+
+int FFmpegUtils::push_rtsp_frame(AVPacket* pkt) {
+    std::lock_guard<std::mutex> lock(_rtsp_mutex);
+    if (!_rtsp_fmt_ctx || !_video_stream || !pkt) return -1;
+
+    // 修正时间戳
+    pkt->stream_index = _video_stream->index;
+    av_packet_rescale_ts(pkt, _enc_ctx->time_base, _video_stream->time_base);
+    pkt->pos = -1; 
+
+    // 写入数据包到RTSP流
+    int ret = av_interleaved_write_frame(_rtsp_fmt_ctx, pkt);
+    if (!check_ret(ret, "推送RTSP帧失败")) {
+        return ret;
+    }
+
+    _frame_index++;
+    return 0;
+}
+
+int FFmpegUtils::start_capture_encode_push(const std::string& rtsp_url) {
+
+    if (!_fmt_ctx || !_enc_ctx) {
+        std::cerr << "采集或编码器未初始化，请先调用init()函数" << std::endl;
+        return -1;
+    }
+
+ 
+    if (init_streamer(rtsp_url) != 0) {
+        return -2;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(_rtsp_mutex);
+        _is_running = true;
+    }
+
+    std::cout << "开始循环采集编码并推流到RTSP: " << rtsp_url << std::endl;
+
+
+    while (true) {
+        {
+            std::lock_guard<std::mutex> lock(_rtsp_mutex);
+            if (!_is_running) break;
+        }
+
+        int ret = capture_frame();
+        if (ret != 0) {
+            std::cerr << "采集帧失败，重试..." << std::endl;
+            usleep(10000);  // 失败后休眠10ms
+            continue;
+        }
+
+        // 编码帧
+        AVPacket* pkt = nullptr;
+        ret = encode(_frame_raw, &pkt);
+        if (ret != 0 || !pkt) {
+            std::cerr << "编码帧失败，重试..." << std::endl;
+            if (pkt) av_packet_free(&pkt);
+            continue;
+        }
+
+        // 推送RTSP帧
+        ret = push_rtsp_frame(pkt);
+        if (ret != 0) {
+            std::cerr << "推送RTSP帧失败，重试..." << std::endl;
+        }
+
+        av_packet_free(&pkt);
+
+
+        usleep(1000000 / _enc_params.fps);
+    }
+
+    std::vector<AVPacket*> remaining_pkts;
+    flush_encoder(remaining_pkts);
+    for (auto pkt : remaining_pkts) {
+        push_rtsp_frame(pkt);
+        av_packet_free(&pkt);
+    }
+
+    // 写入RTSP尾信息
+    av_write_trailer(_rtsp_fmt_ctx);
+
+    std::cout << "循环采集编码推流已停止" << std::endl;
+    return 0;
+}
+
+void FFmpegUtils::stop_capture_encode_push() {
+    std::lock_guard<std::mutex> lock(_rtsp_mutex);
+    _is_running = false;
+    std::cout << "已触发停止循环采集编码推流" << std::endl;
+}
+
+void FFmpegUtils::release_streamer() {
+    std::lock_guard<std::mutex> lock(_rtsp_mutex);
+    if (_rtsp_fmt_ctx) {
+        if (_rtsp_fmt_ctx->pb) {
+            avio_close(_rtsp_fmt_ctx->pb);
+        }
+        avformat_free_context(_rtsp_fmt_ctx);
+        _rtsp_fmt_ctx = nullptr;
+    }
+    _video_stream = nullptr;
+    _frame_index = 0;
+    std::cout << "RTSP推流器已释放" << std::endl;
+}
+
+
+
 int FFmpegUtils::init(int width, int height) {
     if (init_capture(width, height) != 0) return -1;
 
@@ -505,12 +684,14 @@ int FFmpegUtils::init(int width, int height) {
     params.width = width;
     params.height = height;
     params.pixfmt = AV_PIX_FMT_NV12;
-    params.codec_type = CodecType::MJPEG_RKMPP;
-    return init_encoder(params);
+    params.codec_type = CodecType::H264_RKMPP;
+    if (init_encoder(params) != 0) return -1;
+    return 0; 
 }
 
 void FFmpegUtils::release_all() {
     release_capture();
     release_encoder();
     release_decoder();
+    release_streamer();
 }

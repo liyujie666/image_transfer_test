@@ -39,7 +39,7 @@ void runTCPServer(const std::vector<uchar>& encoded_data,const ImageMeta& meta) 
             TimerUtil totalTimer;
             totalTimer.start();
 
-            // 发送图片元信息 + 发送图片数据
+            // 发送图片元信息 + 图片数据
             tcpServer->send_msg(client_fd, &meta, sizeof(ImageMeta));
             tcpServer->send_msg(client_fd, encoded_data.data(), encoded_data.size());
             

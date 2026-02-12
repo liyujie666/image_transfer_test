@@ -36,10 +36,15 @@ bool RpcEngine::init_server(const std::string& listen_addr,int io_threads){
         const int hwm = 10000;
         router_socket_->set(zmq::sockopt::sndhwm, hwm);
         router_socket_->set(zmq::sockopt::rcvhwm, hwm);
-        dealer_socket_->set(zmq::sockopt::sndhwm, hwm);
-        dealer_socket_->set(zmq::sockopt::rcvhwm, hwm);
         router_socket_->set(zmq::sockopt::tcp_keepalive, 1);
         router_socket_->set(zmq::sockopt::linger, 100);
+        router_socket_->set(zmq::sockopt::router_mandatory, 1);
+        router_socket_->set(zmq::sockopt::heartbeat_ivl, 5000);
+        router_socket_->set(zmq::sockopt::heartbeat_timeout, 15000);
+        router_socket_->set(zmq::sockopt::immediate, 1);
+
+        dealer_socket_->set(zmq::sockopt::sndhwm, hwm);
+        dealer_socket_->set(zmq::sockopt::rcvhwm, hwm);
         dealer_socket_->set(zmq::sockopt::linger, 100);
 
         router_socket_->bind(listen_addr);
@@ -56,12 +61,10 @@ void RpcEngine::register_method(const std::string& method_name,RpcHandler handle
     method_map_[method_name] = std::move(handler);
 }
 
-// ZMQ代理线程
 void RpcEngine::proxy_routine() {
     zmq_proxy(router_socket_->handle(), dealer_socket_->handle(), nullptr);
 }
 
-// 工作线程处理请求
 void RpcEngine::worker_routine() {
     zmq::socket_t worker(*zmq_ctx_, ZMQ_DEALER);
     worker.connect("inproc://rpc_workers");
@@ -86,7 +89,6 @@ void RpcEngine::worker_routine() {
     try { worker.close(); } catch (...) {}
 }
 
-// 请求分发核心逻辑
 RpcResponse RpcEngine::handle_request(const RpcRequest& request) {
     
     std::cout << "[RPC] request_id=" << request.request_id
@@ -116,7 +118,6 @@ void RpcEngine::start_server(size_t worker_threads){
 void RpcEngine::stop_server() noexcept{
     server_running_ = false;
     // 中断zmq_proxy
-    // zmq_ctx_->shutdown();
     if(router_socket_) router_socket_->close();
     if(dealer_socket_) dealer_socket_->close();
     if(pub_socket_) pub_socket_->close();
@@ -187,8 +188,8 @@ bool RpcEngine::publish(uint64_t stream_id, const void* data, size_t size){
     StreamMeta meta;
     meta.stream_id = stream_id;
     meta.seq = ctx.seq;
-    meta.timestamp = (uint64_t)std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+    // meta.timestamp = (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
+    //     std::chrono::system_clock::now().time_since_epoch()).count();
 
     try
     {
@@ -299,7 +300,6 @@ bool StreamSubscriber::subscribe(const std::string& addr, const std::string& top
     if (running_) return false;
     callback_ = std::move(cb);
     sub_socket_ = std::make_unique<zmq::socket_t>(ctx_, ZMQ_SUB);
-    // subscribe by prefix equals topic
     sub_socket_->set(zmq::sockopt::subscribe, topic);
     sub_socket_->connect(addr);
     running_ = true;
@@ -309,11 +309,14 @@ bool StreamSubscriber::subscribe(const std::string& addr, const std::string& top
 
 void StreamSubscriber::unsubscribe() {
     running_ = false;
+
+    if (recv_thread_.joinable()) recv_thread_.join();
+    
     if (sub_socket_) {
         try { sub_socket_->close(); } catch(...) {}
         sub_socket_.reset();
     }
-    if (recv_thread_.joinable()) recv_thread_.join();
+    
 }
 
 

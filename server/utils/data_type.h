@@ -10,6 +10,8 @@
 
 const std::string SERVER_IP_RK3576 = "192.168.23.36";
 const std::string SERVER_IP_RK3588 = "192.168.23.99";
+
+const std::string RTSP_URL = "rtsp://192.168.23.99:554/live/camera";
 // TCP Port
 const int TCP_PORT = 12345;
 // ZMQ REP Port
@@ -29,7 +31,8 @@ struct ImageMeta {
     bool is_compressed;
     int compress_type;   // 压缩格式：1=JPEG  2=PNG
     size_t comp_data_len;
-    MSGPACK_DEFINE(rows, cols,type,is_compressed,compress_type, comp_data_len);
+    uint64_t timestamp_us;
+    MSGPACK_DEFINE(rows, cols,type,is_compressed,compress_type, comp_data_len,timestamp_us);
 };
 
 struct RpcImageResponse {

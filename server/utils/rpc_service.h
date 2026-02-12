@@ -24,6 +24,7 @@ private:
 
     RpcCMDResponse handle_init(const CameraConfig& config);
     RpcCMDResponse handle_run();
+    RpcCMDResponse handle_push(const CameraConfig& config);
     RpcCMDResponse handle_stop();
     void register_all_methods();
 

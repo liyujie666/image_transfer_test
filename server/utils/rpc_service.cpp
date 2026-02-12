@@ -49,6 +49,9 @@ void RpcService::register_all_methods(){
     server_->register_method("run", [this]() -> RpcCMDResponse {
         return this->handle_run();
     });
+    server_->register_method("push", [this](const CameraConfig& config) -> RpcCMDResponse {
+        return this->handle_push(config);
+    });
     server_->register_method("stop", [this]() -> RpcCMDResponse {
         return this->handle_stop();
     });
@@ -134,13 +137,12 @@ RpcCMDResponse RpcService::handle_run(){
 
         is_capturing_ = true;
         state_ = ServiceState::RUNNING;
-
         resp.success = true;
         resp.error_msg = "Continuous capture started (fps: " + std::to_string(cur_config_.fps) + ")";
         LOG_INFO(resp.error_msg.c_str());
         break;
     default:
-    resp.success = false;
+        resp.success = false;
         resp.error_msg = "Unsupported capture mode: " + std::to_string(static_cast<int>(cur_config_.cap_mode));
         LOG_ERROR(resp.error_msg.c_str());
         break;
@@ -148,6 +150,38 @@ RpcCMDResponse RpcService::handle_run(){
 
     return resp;
 }
+
+
+RpcCMDResponse RpcService::handle_push(const CameraConfig& config){
+
+    RpcCMDResponse resp;
+    std::lock_guard<std::mutex> lock(state_mtx_);
+
+    if (state_ == ServiceState::RUNNING) {
+        resp.success = false;
+        resp.error_msg = "Invalid state: already in RUNNING state (current: " + 
+            std::to_string(static_cast<int>(state_)) + ")";
+        LOG_ERROR(resp.error_msg.c_str());
+        return resp;
+    }
+
+    // 启动RTSP推流
+    int ret = cap_controller_->start_rtsp_pusher(config);
+    if (ret != 0) {
+        resp.success = false;
+        resp.error_msg = "启动RTSP推流失败";
+        LOG_ERROR("RPC push失败，错误码：%d", ret);
+        return resp;
+    }
+
+    state_ = ServiceState::RUNNING;
+    resp.success = true;
+    resp.error_msg = "Rtsp pusher started success";
+
+    return resp;
+}
+
+
 RpcCMDResponse RpcService::handle_stop(){
     RpcCMDResponse resp;
     std::lock_guard<std::mutex> lock(state_mtx_);
@@ -166,11 +200,11 @@ RpcCMDResponse RpcService::handle_stop(){
         if (capture_thread_.joinable()) {
             capture_thread_.join();
         }
-        LOG_INFO("Continuous capture thread stopped");
     }
-
-    state_ = ServiceState::INITIALIZED;
-
+    cap_controller_->stop_rtsp_pusher();
+    cap_controller_->release();
+    
+    state_ = ServiceState::UNINITIALIZED;
     resp.success = true;
     resp.error_msg = "Capture stopped and camera resource released";
     LOG_INFO(resp.error_msg.c_str());
@@ -178,7 +212,7 @@ RpcCMDResponse RpcService::handle_stop(){
 }
 
 int RpcService::close(){
-    // 先停止采集
+
     std::lock_guard<std::mutex> lock(state_mtx_);
     if (is_capturing_) {
         cap_controller_->stop_capture_multiple();
@@ -192,7 +226,7 @@ int RpcService::close(){
     }
     state_ = ServiceState::UNINITIALIZED; 
 
-    // 停止RPC服务
+    // 停止RPC
     if(server_){
         server_->stop();
         LOG_INFO("RPC Server stopped");

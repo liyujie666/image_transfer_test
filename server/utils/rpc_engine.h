@@ -61,7 +61,7 @@ struct StreamContext {
     uint64_t seq{0};
 };
 
-// 函数类型萃取工具（保留原逻辑）
+// 函数类型萃取工具
 template<typename T>
 struct function_traits : public function_traits<decltype(&T::operator())> {};
 
@@ -266,7 +266,6 @@ std::future<RpcResponse> RpcEngine::call_async(const std::string& method_name, A
     req.request_id = generate_request_id();
     req.method = method_name;
 
-    // 直接序列化参数为字符串，无悬空object
     const auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
     msgpack::sbuffer buf;
     msgpack::pack(buf, args_tuple);

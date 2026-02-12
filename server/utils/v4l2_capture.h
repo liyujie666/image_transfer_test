@@ -6,6 +6,7 @@
 #include <linux/videodev2.h>
 #include <opencv2/core/core.hpp>
 #include "image_utils.h"
+#include "timer_util.h"
 
 class V4L2Capture{
 public:
@@ -41,4 +42,5 @@ private:
     std::vector<std::vector<void*>> m_mptr;  // [缓冲区索引][平面索引] = 映射地址
     std::vector<std::vector<int>> m_mlen;    // [缓冲区索引][平面索引] = 平面长度
 
+    std::unique_ptr<TimerUtil> timer_;
 };

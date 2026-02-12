@@ -15,3 +15,6 @@ Makefile
 *.so
 *.dll
 *.exe
+server/3rdparty/
+server/build/
+client/build/

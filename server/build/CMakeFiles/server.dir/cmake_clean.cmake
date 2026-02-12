@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/server.dir/server.cpp.o"
   "CMakeFiles/server.dir/utils/capture_controller.cpp.o"
-  "CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o"
   "CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o"
   "CMakeFiles/server.dir/utils/image_utils.cpp.o"
   "CMakeFiles/server.dir/utils/logger.cpp.o"
-  "CMakeFiles/server.dir/utils/mpp_codec.cpp.o"
   "CMakeFiles/server.dir/utils/rpc_engine.cpp.o"
   "CMakeFiles/server.dir/utils/rpc_service.cpp.o"
   "CMakeFiles/server.dir/utils/tcp_helper.cpp.o"

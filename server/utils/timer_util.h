@@ -1,59 +1,67 @@
 #pragma once
-#include <iostream>
 #include <chrono>
 #include <string>
+#include "logger.h"
 
 class TimerUtil
 {
 public:
-    TimerUtil() { 
-        //start(); 
-    }
-    ~TimerUtil() = default;
+    using Clock = std::chrono::steady_clock;
+
+    explicit TimerUtil(bool enable_log = true): m_enableLog(enable_log){ start(); }
+
     TimerUtil(const TimerUtil&) = delete;
     TimerUtil& operator=(const TimerUtil&) = delete;
+    ~TimerUtil() = default;
 
-    void start()
-    {
-        m_startTime = std::chrono::high_resolution_clock::now();
-    }
+    void start(){m_startTime = Clock::now();}
 
-    void end(const std::string& tag = "目标代码块")
+    double end(const std::string& tag = "代码块")
     {
-        m_endTime = std::chrono::high_resolution_clock::now();
-        printTimeCost(tag);
-    }
+        m_endTime = Clock::now();
+        double cost_ms = getDurationMs(m_startTime, m_endTime);
 
-    void reset()
-    {
-        start();
+        if (m_enableLog) {
+            printTimeCost(tag, cost_ms);
+        }
+
+        return cost_ms;
     }
 
     double getCostMs() const
     {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - m_startTime);
-        return duration.count() / 1000.0;
+        auto now = Clock::now();
+        return getDurationMs(m_startTime, now);
     }
 
+    void reset(){ start();}
+    void setEnableLog(bool enable) { m_enableLog = enable;}
+    bool isLogEnabled() const {return m_enableLog;}
+
 private:
-    std::chrono::high_resolution_clock::time_point m_startTime;
-    std::chrono::high_resolution_clock::time_point m_endTime;
+    Clock::time_point m_startTime;
+    Clock::time_point m_endTime;
+    bool m_enableLog{true};
 
-    void printTimeCost(const std::string& tag) const
+    static double getDurationMs(const Clock::time_point& start,
+                                const Clock::time_point& end)
     {
-        auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(m_endTime - m_startTime).count();
-        auto us = std::chrono::duration_cast<std::chrono::microseconds>(m_endTime - m_startTime).count();
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(m_endTime - m_startTime).count();
-        auto s  = std::chrono::duration_cast<std::chrono::seconds>(m_endTime - m_startTime).count();
+        return std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(end - start).count();
+    }
 
-        if (s > 0)
-            std::cout << "[" << tag << "] cost: " << s << "s (" << ms << "ms)\n";
-        else if (ms > 0)
-            std::cout << "[" << tag << "] cost: " << ms << "ms (" << us << "us)\n";
-        else if (us > 0)
-            std::cout << "[" << tag << "] cost: " << us << "us (" << ns << "ns)\n";
-        else
-            std::cout << "[" << tag << "] cost: " << ns << "ns\n";
+    void printTimeCost(const std::string& tag, double cost_ms) const
+    {
+        if (cost_ms >= 1000.0) {
+            LOG_DEBUG("[%s] cost: %.3f s", tag.c_str(), cost_ms / 1000.0);
+        } 
+        else if (cost_ms >= 1.0) {
+            LOG_DEBUG("[%s] cost: %.3f ms", tag.c_str(), cost_ms);
+        } 
+        else if (cost_ms >= 0.001) {
+            LOG_DEBUG("[%s] cost: %.3f us", tag.c_str(), cost_ms * 1000.0);
+        } 
+        else {
+            LOG_DEBUG("[%s] cost: %.3f ns", tag.c_str(), cost_ms * 1e6);
+        }
     }
 };

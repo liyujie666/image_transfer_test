@@ -13,7 +13,7 @@ file(GLOB_RECURSE SRC_FILES
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-set(AARCH64_SDK_ROOT /home/liyujie/3rdparty/aarch64)
+set(AARCH64_SDK_ROOT  ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 
 # opencv
 set(OPENCV_VERSION 4.12.0)

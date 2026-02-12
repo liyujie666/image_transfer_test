@@ -44,8 +44,8 @@ public:
     // 采集
     int init_capture(int width, int height);
     int capture_frame(std::vector<uint8_t>& out_nv12);
-    int capture_frame(AVFrame* out_frame);
     int capture_frame(cv::Mat& out_nv12);
+    int capture_frame();
     void release_capture();
 
     // 编码
@@ -61,6 +61,13 @@ public:
     int init_decoder(CodecType type);
     int decode(AVPacket* pkt, std::vector<uint8_t>& out_nv12);
     void release_decoder();
+
+    // rtsp
+    int init_streamer(const std::string& rtsp_url);
+    int push_rtsp_frame(AVPacket* pkt);
+    int start_capture_encode_push(const std::string& rtsp_url);
+    void stop_capture_encode_push();
+    void release_streamer();
     
     int init(int width, int height);
     void release_all();
@@ -79,6 +86,7 @@ private:
     int _video_idx = -1;
     AVPacket* _pkt_cap = nullptr;
     AVFrame*  _frame_raw = nullptr;
+    cv::Mat _src_frame_mat;
 
     // 编码
     CodecParams _enc_params{};
@@ -96,6 +104,14 @@ private:
     const AVCodec* _decoder = nullptr;
     AVFrame* _dec_frame = nullptr;
     std::mutex _dec_mutex;
+
+    // rtsp
+    bool _is_running = false;
+    std::mutex _rtsp_mutex;
+    AVFormatContext* _rtsp_fmt_ctx = nullptr;
+    AVStream* _video_stream = nullptr;
+    int64_t _frame_index = 0; 
+    const std::string RTSP_URL = "rtsp:://192.168.23.99:554/stream"; 
 };
 
 #endif // FFMPEG_UTILS_H

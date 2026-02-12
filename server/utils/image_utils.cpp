@@ -22,7 +22,7 @@ bool loadImageByOpencv(const std::string& imagePath, cv::Mat& img)
         return false;
     }
 
-    timer.end("Read image by opencv");
+    timer.end("[Capture] [OpenCV]");
 
     std::cout << "Image loaded: "
               << img.cols << "x" << img.rows
@@ -57,7 +57,7 @@ bool loadVideoByOpencv(const std::string& devNode, cv::Mat& srcImg)
             std::cerr << "Failed to capture frame " << i << " from: " << devNode << std::endl;
             return false;
         }
-        timer.end("Capture frame by opencv");
+        timer.end("[Capture] [OpenCV]");
     }
 
     srcImg = std::move(frame);
@@ -95,7 +95,7 @@ bool loadVideoByV4l2(const std::string& devNode,cv::Mat& srcImg){
             std::cerr << "v4l2 capture frame " << i << " failed" << std::endl;
             return false;
         }
-        captureTimer.end("Read image by v4l2");
+        captureTimer.end("[Capture] [V4l2]");
 
         srcImg = std::move(frame);
     }
@@ -129,7 +129,7 @@ bool loadVideoByV4l2(const std::string& devNode,std::vector<uint8_t>& srcImg){
             std::cerr << "v4l2 capture frame " << i << " failed" << std::endl;
             return false;
         }
-        captureTimer.end("Read image by v4l2");
+        captureTimer.end("[Capture] [V4l2]");
 
         srcImg = std::move(frame);
     }
@@ -155,7 +155,7 @@ bool loadVideoByFFmpeg(const std::string& devNode,std::vector<uint8_t>& srcImg){
         std::cerr << "ffmpeg capture frame failed" << std::endl;
         return false;
     }
-    capTimer.end("capture by ffmpeg");
+    capTimer.end("[Capture] [FFmpeg]");
     return true;
 }
 
@@ -176,7 +176,7 @@ bool convertBgrToYuv420pByCv(const cv::Mat& bgr, cv::Mat& yuv420)
 
     cv::cvtColor(bgr, yuv420, cv::COLOR_BGR2YUV_I420);
 
-    timer.end("convert image");
+    timer.end("[Convert] [BGR->YUV420P] [OpenCV]");
 
     return yuv420.isContinuous();
 }
@@ -193,7 +193,6 @@ if (bgr.empty() || bgr.type() != CV_8UC3) {
     int width  = bgr.cols;
     int height = bgr.rows;
 
-    // YUV420P 的 Mat：rows = h * 3 / 2
     yuv420.create(height * 3 / 2, width, CV_8UC1);
 
     rga_buffer_t src = wrapbuffer_virtualaddr(
@@ -217,24 +216,11 @@ if (bgr.empty() || bgr.type() != CV_8UC3) {
         return false;
     }
 
-    timer.end("convet image");
+    timer.end("[Convert] [BGR->YUV420P] [RGA]");
     return true;
 
 }
 
-bool convertBgrToNV12ByCv(const cv::Mat& bgr, cv::Mat& nv12){
-    if (bgr.empty()) {
-        std::cerr << "BGR image empty" << std::endl;
-        return false;
-    }
-
-    if (bgr.type() != CV_8UC3) {
-        std::cerr << "Input must be CV_8UC3 (BGR)" << std::endl;
-        return false;
-    }
-
-    return true;
-}
 
 bool convertBgrToNV12ByRga(const cv::Mat& bgr, cv::Mat& nv12){
     if (bgr.empty() || bgr.type() != CV_8UC3) {
@@ -263,15 +249,14 @@ bool convertBgrToNV12ByRga(const cv::Mat& bgr, cv::Mat& nv12){
         height,
         RK_FORMAT_YCbCr_420_SP   // NV12
     );
-    timer.end("rga_buffer_t");
-    timer.reset();
+
     int ret = imcvtcolor(src, dst, RK_FORMAT_BGR_888, RK_FORMAT_YCbCr_420_SP);
     if (ret != IM_STATUS_SUCCESS) {
         std::cerr << "RGA BGR->NV12 failed: " << ret << std::endl;
         return false;
     }
 
-    timer.end("convet image");
+    timer.end("[Convert] [BGR->NV12] [RGA]");
     
     return true;
 }
@@ -301,28 +286,26 @@ bool convertNv12ToBgrByRga(const cv::Mat& nv12,cv::Mat& bgr){
     }
 
     rga_buffer_t src = wrapbuffer_virtualaddr(
-        (void*)nv12.data,    // NV12原始数据地址
-        width,               // 图像宽度
-        height,              // 图像高度（原始高度，非NV12的1.5倍高度）
-        RK_FORMAT_YCbCr_420_SP  // NV12对应的RGA格式
+        (void*)nv12.data,    
+        width,               
+        height,             
+        RK_FORMAT_YCbCr_420_SP  
     );
 
     rga_buffer_t dst = wrapbuffer_virtualaddr(
-        (void*)bgr.data,     // BGR输出数据地址
-        width,               // 图像宽度
-        height,              // 图像高度
-        RK_FORMAT_BGR_888    // BGR对应的RGA格式
+        (void*)bgr.data,     
+        width,               
+        height,              
+        RK_FORMAT_BGR_888    
     );
-    timer.end("RGA buffer wrap");
 
-    timer.reset();
     int ret = imcvtcolor(src, dst, RK_FORMAT_YCbCr_420_SP, RK_FORMAT_BGR_888);
     if (ret != IM_STATUS_SUCCESS) {
         std::cerr << "RGA NV12->BGR failed: ret=" << ret << std::endl;
-        bgr.release();  // 失败时释放输出Mat
+        bgr.release();  
         return false;
     }
-    timer.end("RGA NV12 to BGR convert");
+    timer.end("[Convert] [NV12->BGR] [RGA]");
 
     return true;
 }

@@ -6,5 +6,5 @@ CXX_FLAGS = -O3 -DNDEBUG   -std=gnu++17
 
 CXX_DEFINES = -DMSGPACK_NO_BOOST
 
-CXX_INCLUDES = -I/home/liyujie/QtProjects/test_image_transfer/server -I/home/liyujie/3rdparty/aarch64/ffmpeg/include -I/home/liyujie/3rdparty/aarch64/opencv/4.12.0/include/opencv4 -I/home/liyujie/3rdparty/aarch64/zmq/include -I/home/liyujie/3rdparty/aarch64/rga/include/rga -I/home/liyujie/3rdparty/aarch64/mpp/include -I/home/liyujie/3rdparty/aarch64/msgpack/include 
+CXX_INCLUDES = -I/home/liyujie/QtProjects/test_image_transfer/server -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/ffmpeg/include -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/opencv/4.12.0/include/opencv4 -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/zmq/include -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/rga/include/rga -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/mpp/include -I/home/liyujie/QtProjects/test_image_transfer/server/3rdparty/msgpack/include 
 

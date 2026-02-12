@@ -6,11 +6,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/liyujie/QtProjects/test_image_transfer/server/server.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/server.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/capture_controller.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/capture_controller.cpp.o"
-  "/home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_codec.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_utils.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/image_utils.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/image_utils.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/logger.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/logger.cpp.o"
-  "/home/liyujie/QtProjects/test_image_transfer/server/utils/mpp_codec.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/mpp_codec.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_engine.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/rpc_engine.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_service.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/rpc_service.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/tcp_helper.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/tcp_helper.cpp.o"
@@ -27,12 +25,12 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../"
-  "/home/liyujie/3rdparty/aarch64/ffmpeg/include"
-  "/home/liyujie/3rdparty/aarch64/opencv/4.12.0/include/opencv4"
-  "/home/liyujie/3rdparty/aarch64/zmq/include"
-  "/home/liyujie/3rdparty/aarch64/rga/include/rga"
-  "/home/liyujie/3rdparty/aarch64/mpp/include"
-  "/home/liyujie/3rdparty/aarch64/msgpack/include"
+  "../3rdparty/ffmpeg/include"
+  "../3rdparty/opencv/4.12.0/include/opencv4"
+  "../3rdparty/zmq/include"
+  "../3rdparty/rga/include/rga"
+  "../3rdparty/mpp/include"
+  "../3rdparty/msgpack/include"
   )
 
 # Targets to which this target links.

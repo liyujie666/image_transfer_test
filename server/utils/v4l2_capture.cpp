@@ -1,5 +1,4 @@
 #include "v4l2_capture.h"
-#include "timer_util.h"
 #include "logger.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -29,6 +28,8 @@ V4L2Capture::V4L2Capture(const std::string& dev_node, int width, int height,uint
     // 初始化缓冲区容器（避免越界）
     m_mptr.resize(m_buffer_count, std::vector<void*>(VIDEO_MAX_PLANES, nullptr));
     m_mlen.resize(m_buffer_count, std::vector<int>(VIDEO_MAX_PLANES, 0));
+
+    timer_ = std::make_unique<TimerUtil>();
 }
 
 V4L2Capture::~V4L2Capture() {
@@ -37,8 +38,6 @@ V4L2Capture::~V4L2Capture() {
 
 bool V4L2Capture::init() {
     std::lock_guard<std::mutex> lock(m_mutex);
-
-    LOG_INFO("初始化摄像头");
 
     // 打开设备
     m_fd = open(m_dev_node.c_str(),O_RDWR);
@@ -61,11 +60,6 @@ bool V4L2Capture::init() {
         m_fd = -1;
         return false;
     }
-
-    printf("V4L2Capture: 实际生效格式 - 分辨率：%dx%d，格式：0x%x\n",
-               fmt.fmt.pix_mp.width, fmt.fmt.pix_mp.height, fmt.fmt.pix_mp.pixelformat);
-        m_width = fmt.fmt.pix_mp.width;  // 更新为实际宽度
-        m_height = fmt.fmt.pix_mp.height;// 更新为实际高度
 
      // 申请mmap缓冲区
      struct v4l2_requestbuffers req = {0};
@@ -141,8 +135,7 @@ bool V4L2Capture::init() {
 
     m_is_initialized = true;
 
-    LOG_INFO("初始化摄像头成功");
-    printf("设备：%s，分辨率：%dx%d\n",m_dev_node.c_str(), m_width, m_height);
+    LOG_INFO("初始化摄像头成功,设备：%s，分辨率：%dx%d",m_dev_node.c_str(), m_width, m_height);
     return true;
 
 }
@@ -155,6 +148,7 @@ bool V4L2Capture::captureFrame(std::vector<uint8_t>& frame_nv12) {
         return false;
     }
 
+    timer_->start();
     // 出队取帧
     struct v4l2_buffer buf = {0};
     struct v4l2_plane planes[VIDEO_MAX_PLANES] = {0};
@@ -183,6 +177,7 @@ bool V4L2Capture::captureFrame(std::vector<uint8_t>& frame_nv12) {
         offset += buf.m.planes[p].bytesused;
     }
 
+    timer_->end("[Capture] [V4l2]");
     // 缓冲区入队，继续采集
     if (ioctl(m_fd, VIDIOC_QBUF, &buf) < 0) {
         LOG_ERROR("VIDIOC_DQBUF failed");
@@ -199,9 +194,7 @@ bool V4L2Capture::captureFrame(cv::Mat& frame_nv12) {
         LOG_ERROR("设备未初始化或已关闭");
         return false;
     }
-
-    TimerUtil timer;
-    timer.start();
+    timer_->start();
 
     // 出队取帧
     struct v4l2_buffer buf = {0};
@@ -234,7 +227,7 @@ bool V4L2Capture::captureFrame(cv::Mat& frame_nv12) {
         offset += buf.m.planes[p].bytesused;
     }
 
-    timer.end("Capture frame by v4l2");
+    timer_->end("[Capture] [V4l2]");
     // 缓冲区入队，继续采集
     if (ioctl(m_fd, VIDIOC_QBUF, &buf) < 0) {
         LOG_ERROR("VIDIOC_QBUF failed"); 

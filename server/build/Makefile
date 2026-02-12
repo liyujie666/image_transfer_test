@@ -223,33 +223,6 @@ utils/capture_controller.cpp.s:
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/capture_controller.cpp.s
 .PHONY : utils/capture_controller.cpp.s
 
-utils/ffmpeg_codec.o: utils/ffmpeg_codec.cpp.o
-
-.PHONY : utils/ffmpeg_codec.o
-
-# target to build an object file
-utils/ffmpeg_codec.cpp.o:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o
-.PHONY : utils/ffmpeg_codec.cpp.o
-
-utils/ffmpeg_codec.i: utils/ffmpeg_codec.cpp.i
-
-.PHONY : utils/ffmpeg_codec.i
-
-# target to preprocess a source file
-utils/ffmpeg_codec.cpp.i:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.i
-.PHONY : utils/ffmpeg_codec.cpp.i
-
-utils/ffmpeg_codec.s: utils/ffmpeg_codec.cpp.s
-
-.PHONY : utils/ffmpeg_codec.s
-
-# target to generate assembly for a file
-utils/ffmpeg_codec.cpp.s:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.s
-.PHONY : utils/ffmpeg_codec.cpp.s
-
 utils/ffmpeg_utils.o: utils/ffmpeg_utils.cpp.o
 
 .PHONY : utils/ffmpeg_utils.o
@@ -330,33 +303,6 @@ utils/logger.s: utils/logger.cpp.s
 utils/logger.cpp.s:
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/logger.cpp.s
 .PHONY : utils/logger.cpp.s
-
-utils/mpp_codec.o: utils/mpp_codec.cpp.o
-
-.PHONY : utils/mpp_codec.o
-
-# target to build an object file
-utils/mpp_codec.cpp.o:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_codec.cpp.o
-.PHONY : utils/mpp_codec.cpp.o
-
-utils/mpp_codec.i: utils/mpp_codec.cpp.i
-
-.PHONY : utils/mpp_codec.i
-
-# target to preprocess a source file
-utils/mpp_codec.cpp.i:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_codec.cpp.i
-.PHONY : utils/mpp_codec.cpp.i
-
-utils/mpp_codec.s: utils/mpp_codec.cpp.s
-
-.PHONY : utils/mpp_codec.s
-
-# target to generate assembly for a file
-utils/mpp_codec.cpp.s:
-	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_codec.cpp.s
-.PHONY : utils/mpp_codec.cpp.s
 
 utils/rpc_engine.o: utils/rpc_engine.cpp.o
 
@@ -512,9 +458,6 @@ help:
 	@echo "... utils/capture_controller.o"
 	@echo "... utils/capture_controller.i"
 	@echo "... utils/capture_controller.s"
-	@echo "... utils/ffmpeg_codec.o"
-	@echo "... utils/ffmpeg_codec.i"
-	@echo "... utils/ffmpeg_codec.s"
 	@echo "... utils/ffmpeg_utils.o"
 	@echo "... utils/ffmpeg_utils.i"
 	@echo "... utils/ffmpeg_utils.s"
@@ -524,9 +467,6 @@ help:
 	@echo "... utils/logger.o"
 	@echo "... utils/logger.i"
 	@echo "... utils/logger.s"
-	@echo "... utils/mpp_codec.o"
-	@echo "... utils/mpp_codec.i"
-	@echo "... utils/mpp_codec.s"
 	@echo "... utils/rpc_engine.o"
 	@echo "... utils/rpc_engine.i"
 	@echo "... utils/rpc_engine.s"

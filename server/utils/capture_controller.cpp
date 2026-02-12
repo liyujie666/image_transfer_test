@@ -1,6 +1,9 @@
 #include "capture_controller.h"
+#include "timer_util.h"
+#include "image_utils.h"
 #include "logger.h"
 #include <unistd.h>
+
 CaptureController::CaptureController(const std::string& dev_node)
     : dev_node_(dev_node),is_multiple_capturing_(false)
 {
@@ -37,6 +40,8 @@ int CaptureController::init_devices()
         }
         opencv_cap_->set(cv::CAP_PROP_FRAME_WIDTH, cur_config_.width);
         opencv_cap_->set(cv::CAP_PROP_FRAME_HEIGHT, cur_config_.height);
+        opencv_cap_->set(cv::CAP_PROP_FPS, cur_config_.fps);
+        opencv_cap_->set(cv::CAP_PROP_BUFFERSIZE, 4);
         break;
     case CaptureDevice::FFMPEG:
         ffmpeg_cap_ = std::make_unique<FFmpegUtils>(dev_node_);
@@ -76,6 +81,7 @@ int CaptureController::init_encoders(){
     return 0;
 }
 
+
 int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, ImageMeta& meta)
 {
     cv::Mat src_frame;
@@ -94,7 +100,8 @@ int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, Ima
         LOG_ERROR("Unsupported capture device");
         break;
     }
-    LOG_INFO("capture frame success");
+    //LOG_INFO("capture frame success");
+
     // 编码
     switch (cur_config_.encode_type)
     {
@@ -106,7 +113,8 @@ int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, Ima
         LOG_ERROR("Unsupported encode type");
         break;
     }
-    LOG_INFO("encode frame success");
+    //LOG_INFO("encode frame success");
+
     return 0;
 
 }
@@ -144,8 +152,46 @@ void CaptureController::stop_capture_multiple()
     if (capture_multiple_thread_.joinable()) {
         capture_multiple_thread_.join();
     }
-    LOG_INFO("Continuous capture stopped (dev: %s)", dev_node_.c_str());
+    LOG_INFO("Continuous capture thread stopped (dev: %s)", dev_node_.c_str());
 }
+
+int CaptureController::start_rtsp_pusher(const CameraConfig& config){
+    std::lock_guard<std::mutex> lock(push_mutex_);
+    
+    if (is_pushing_) {
+        LOG_WARN("RTSP推流已在运行");
+        return 0;
+    }
+    cur_config_ = config;
+    ffmpeg_pusher_ = std::make_unique<FFmpegUtils>(dev_node_);
+    if(ffmpeg_pusher_->init(cur_config_.width,cur_config_.height) < 0) return -1;
+
+    is_pushing_ = true;
+    
+    push_thread_ = std::thread(&FFmpegUtils::start_capture_encode_push,ffmpeg_pusher_.get(),RTSP_URL);
+
+    LOG_INFO("RTSP推流已启动，地址：%s", RTSP_URL.c_str());
+    return 0;
+}
+void CaptureController::stop_rtsp_pusher(){
+    std::lock_guard<std::mutex> lock(push_mutex_);
+    
+    if (!is_pushing_) {
+        return;
+    }
+
+    ffmpeg_pusher_->stop_capture_encode_push();
+    
+    if (push_thread_.joinable()) {
+        push_thread_.join();
+    }
+    
+    // 4. 更新状态
+    is_pushing_ = false;
+    LOG_INFO("RTSP推流已停止，地址：%s", RTSP_URL.c_str());
+}
+
+
 
 void CaptureController::release()
 {
@@ -167,19 +213,24 @@ void CaptureController::release()
         ffmpeg_enc_->release_all();
         ffmpeg_enc_.reset();
     }
+    if(ffmpeg_pusher_){
+        ffmpeg_pusher_->release_all();
+        ffmpeg_pusher_.reset();
+    }
     
 }
 
 
 int CaptureController::capture_single_by_opencv(cv::Mat& src_frame){
     if(!opencv_cap_) return -1;
-
+    TimerUtil timer;
+    timer.start();
     *opencv_cap_ >> src_frame;
     if(src_frame.empty()){
         LOG_ERROR("Failed to capture frame by opencv");
         return -1;
     }
-
+    timer.end("[Capture] [OpenCV]");
     return 0;
 }
 int CaptureController::capture_single_by_v4l2(cv::Mat& src_frame){
@@ -203,6 +254,7 @@ int CaptureController::capture_single_by_ffmpeg(cv::Mat& src_frame){
     return 0;
 }
 
+
 int CaptureController::encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta){
     if(!ffmpeg_enc_) return -1;
     const int max_retry = 5;        
@@ -211,30 +263,58 @@ int CaptureController::encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uin
     AVPacket* pkt = nullptr;
     int ret = 0;
 
-    while (retry_cnt < max_retry) {
+    // 若用opencv采集需转换格式，bgr-->nv12
+    if(cur_config_.cap_device == CaptureDevice::OPENCV){
+        cv::Mat nv12_frame;
+        if(convertBgrToNV12ByRga(src_frame,nv12_frame) < 0){
+            return -1;
+        }
 
-        ret = ffmpeg_enc_->encode(src_frame, &pkt);
-      
-        if (ret == 0 && pkt != nullptr) {
+        while (retry_cnt < max_retry) {
+
+            ret = ffmpeg_enc_->encode(nv12_frame, &pkt);
+        
+            if (ret == 0 && pkt != nullptr) {
+                break;
+            }
+        
+            if (ret == AVERROR(EAGAIN)) {
+                retry_cnt++;
+                usleep(retry_delay_us);
+                LOG_WARN("编码器忙，重试 %d/%d",retry_cnt,max_retry);
+                continue;
+            }
+
+            LOG_ERROR("帧编码错误，错误码：%d",ret);
             break;
         }
-       
-        if (ret == AVERROR(EAGAIN)) {
-            retry_cnt++;
-            usleep(retry_delay_us);
-            LOG_WARN("编码器忙，重试 %d/%d",retry_cnt,max_retry);
-            continue;
-        }
 
-        LOG_ERROR("帧编码错误，错误码：%d",ret);
-        break;
+    }else{
+
+        while (retry_cnt < max_retry) {
+
+            ret = ffmpeg_enc_->encode(src_frame, &pkt);
+        
+            if (ret == 0 && pkt != nullptr) {
+                break;
+            }
+        
+            if (ret == AVERROR(EAGAIN)) {
+                retry_cnt++;
+                usleep(retry_delay_us);
+                LOG_WARN("编码器忙，重试 %d/%d",retry_cnt,max_retry);
+                continue;
+            }
+
+            LOG_ERROR("帧编码错误，错误码：%d",ret);
+            break;
+        }
     }
 
-    // copy data to vector
     if (pkt && pkt->size > 0) {
         dst_frame.resize(pkt->size);
         memcpy(dst_frame.data(), pkt->data, pkt->size);
-        LOG_INFO("pkt size: %d",pkt->size);
+        //LOG_INFO("pkt size: %d",pkt->size);
         meta.cols = src_frame.cols;
         meta.rows = src_frame.rows * 2 / 3;
         meta.comp_data_len = pkt->size;
@@ -245,16 +325,26 @@ int CaptureController::encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uin
     return -1;
 
 }
+
 int CaptureController::encode_by_opencv(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta){
     cv::Mat encode_img = src_frame.clone();
-    std::vector<int> encode_params;
+    
 
-    if(COMPRESS_FORMAT == 1) {
-        encode_params = {cv::IMWRITE_JPEG_QUALITY, COMPRESS_QUALITY};
-    } else {
-        encode_params = {cv::IMWRITE_PNG_COMPRESSION, COMPRESS_QUALITY/10}; 
+    TimerUtil timer;
+    timer.start();
+    
+    bool ret;
+    // 非opencv采集的视频帧为nv12格式，需转换为bgr
+    if(cur_config_.cap_device != CaptureDevice::OPENCV){
+        cv::Mat bgr_frame;
+        if(convertNv12ToBgrByRga(src_frame,bgr_frame) < 0) {
+            return -1;
+        }
+        ret = cv::imencode(".jpg", bgr_frame, dst_frame, encode_params_opencv);
+    }else{
+        ret = cv::imencode(".jpg", src_frame, dst_frame, encode_params_opencv);
     }
-    bool ret = cv::imencode(COMPRESS_FORMAT==1 ? ".jpg" : ".png", encode_img, dst_frame, encode_params);
+
     if(ret) {
         meta.is_compressed = true;
         meta.compress_type = COMPRESS_FORMAT;
@@ -262,6 +352,7 @@ int CaptureController::encode_by_opencv(const cv::Mat& src_frame,std::vector<uin
         meta.rows = src_frame.rows;
         meta.comp_data_len = dst_frame.size();
     }
+    timer.end("[Encode] [OpenCV]");
     return ret;
 }
 
@@ -269,7 +360,7 @@ void CaptureController::capture_multiple_loop()
 {
     std::vector<uint8_t> frame_data;
     ImageMeta frame_meta;
-    // 帧间隔）
+    // 帧间隔
     int frame_interval_ms = 1000 / cur_config_.fps;
 
     while (is_multiple_capturing_) {
@@ -289,7 +380,6 @@ void CaptureController::capture_multiple_loop()
         std::this_thread::sleep_for(std::chrono::milliseconds(frame_interval_ms));
     }
 }
-
 
 bool CaptureController::publish_frame(const std::vector<uint8_t>& frame_data, const ImageMeta& meta)
 {

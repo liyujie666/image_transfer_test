@@ -83,22 +83,9 @@ CMakeFiles/server.dir/utils/capture_controller.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/utils/capture_controller.cpp.s"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/liyujie/QtProjects/test_image_transfer/server/utils/capture_controller.cpp -o CMakeFiles/server.dir/utils/capture_controller.cpp.s
 
-CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o: CMakeFiles/server.dir/flags.make
-CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o: ../utils/ffmpeg_codec.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_codec.cpp
-
-CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.i"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_codec.cpp > CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.i
-
-CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.s"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_codec.cpp -o CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.s
-
 CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o: ../utils/ffmpeg_utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_utils.cpp
 
 CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.i: cmake_force
@@ -111,7 +98,7 @@ CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/image_utils.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/image_utils.cpp.o: ../utils/image_utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/server.dir/utils/image_utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/server.dir/utils/image_utils.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/image_utils.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/image_utils.cpp
 
 CMakeFiles/server.dir/utils/image_utils.cpp.i: cmake_force
@@ -124,7 +111,7 @@ CMakeFiles/server.dir/utils/image_utils.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/logger.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/logger.cpp.o: ../utils/logger.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/server.dir/utils/logger.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/server.dir/utils/logger.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/logger.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/logger.cpp
 
 CMakeFiles/server.dir/utils/logger.cpp.i: cmake_force
@@ -135,22 +122,9 @@ CMakeFiles/server.dir/utils/logger.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/utils/logger.cpp.s"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/liyujie/QtProjects/test_image_transfer/server/utils/logger.cpp -o CMakeFiles/server.dir/utils/logger.cpp.s
 
-CMakeFiles/server.dir/utils/mpp_codec.cpp.o: CMakeFiles/server.dir/flags.make
-CMakeFiles/server.dir/utils/mpp_codec.cpp.o: ../utils/mpp_codec.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/server.dir/utils/mpp_codec.cpp.o"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/mpp_codec.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/mpp_codec.cpp
-
-CMakeFiles/server.dir/utils/mpp_codec.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/utils/mpp_codec.cpp.i"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/liyujie/QtProjects/test_image_transfer/server/utils/mpp_codec.cpp > CMakeFiles/server.dir/utils/mpp_codec.cpp.i
-
-CMakeFiles/server.dir/utils/mpp_codec.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/utils/mpp_codec.cpp.s"
-	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/liyujie/QtProjects/test_image_transfer/server/utils/mpp_codec.cpp -o CMakeFiles/server.dir/utils/mpp_codec.cpp.s
-
 CMakeFiles/server.dir/utils/rpc_engine.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/rpc_engine.cpp.o: ../utils/rpc_engine.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/server.dir/utils/rpc_engine.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/server.dir/utils/rpc_engine.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/rpc_engine.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_engine.cpp
 
 CMakeFiles/server.dir/utils/rpc_engine.cpp.i: cmake_force
@@ -163,7 +137,7 @@ CMakeFiles/server.dir/utils/rpc_engine.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/rpc_service.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/rpc_service.cpp.o: ../utils/rpc_service.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/utils/rpc_service.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/server.dir/utils/rpc_service.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/rpc_service.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_service.cpp
 
 CMakeFiles/server.dir/utils/rpc_service.cpp.i: cmake_force
@@ -176,7 +150,7 @@ CMakeFiles/server.dir/utils/rpc_service.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/tcp_helper.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/tcp_helper.cpp.o: ../utils/tcp_helper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/server.dir/utils/tcp_helper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/server.dir/utils/tcp_helper.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/tcp_helper.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/tcp_helper.cpp
 
 CMakeFiles/server.dir/utils/tcp_helper.cpp.i: cmake_force
@@ -189,7 +163,7 @@ CMakeFiles/server.dir/utils/tcp_helper.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/v4l2_capture.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/v4l2_capture.cpp.o: ../utils/v4l2_capture.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/server.dir/utils/v4l2_capture.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/utils/v4l2_capture.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/v4l2_capture.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/v4l2_capture.cpp
 
 CMakeFiles/server.dir/utils/v4l2_capture.cpp.i: cmake_force
@@ -202,7 +176,7 @@ CMakeFiles/server.dir/utils/v4l2_capture.cpp.s: cmake_force
 
 CMakeFiles/server.dir/utils/zmq_helper.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/utils/zmq_helper.cpp.o: ../utils/zmq_helper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/server.dir/utils/zmq_helper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/server.dir/utils/zmq_helper.cpp.o"
 	/usr/bin/aarch64-linux-gnu-g++ --sysroot=/opt/sysroot_ubuntu20.04  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/utils/zmq_helper.cpp.o -c /home/liyujie/QtProjects/test_image_transfer/server/utils/zmq_helper.cpp
 
 CMakeFiles/server.dir/utils/zmq_helper.cpp.i: cmake_force
@@ -217,11 +191,9 @@ CMakeFiles/server.dir/utils/zmq_helper.cpp.s: cmake_force
 server_OBJECTS = \
 "CMakeFiles/server.dir/server.cpp.o" \
 "CMakeFiles/server.dir/utils/capture_controller.cpp.o" \
-"CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o" \
 "CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o" \
 "CMakeFiles/server.dir/utils/image_utils.cpp.o" \
 "CMakeFiles/server.dir/utils/logger.cpp.o" \
-"CMakeFiles/server.dir/utils/mpp_codec.cpp.o" \
 "CMakeFiles/server.dir/utils/rpc_engine.cpp.o" \
 "CMakeFiles/server.dir/utils/rpc_service.cpp.o" \
 "CMakeFiles/server.dir/utils/tcp_helper.cpp.o" \
@@ -233,11 +205,9 @@ server_EXTERNAL_OBJECTS =
 
 server: CMakeFiles/server.dir/server.cpp.o
 server: CMakeFiles/server.dir/utils/capture_controller.cpp.o
-server: CMakeFiles/server.dir/utils/ffmpeg_codec.cpp.o
 server: CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o
 server: CMakeFiles/server.dir/utils/image_utils.cpp.o
 server: CMakeFiles/server.dir/utils/logger.cpp.o
-server: CMakeFiles/server.dir/utils/mpp_codec.cpp.o
 server: CMakeFiles/server.dir/utils/rpc_engine.cpp.o
 server: CMakeFiles/server.dir/utils/rpc_service.cpp.o
 server: CMakeFiles/server.dir/utils/tcp_helper.cpp.o
@@ -245,7 +215,7 @@ server: CMakeFiles/server.dir/utils/v4l2_capture.cpp.o
 server: CMakeFiles/server.dir/utils/zmq_helper.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
