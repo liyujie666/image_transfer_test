@@ -43,12 +43,14 @@ struct RpcImageResponse {
 
 enum class CaptureDevice{
     V4L2,
+    V4L2_DMA,
     OPENCV,
     FFMPEG
 };
 MSGPACK_ADD_ENUM(CaptureDevice);
 enum class EncodeType{
     FFMPEG,
+    MPP_DMA,
     OPENCV
 };
 MSGPACK_ADD_ENUM(EncodeType);

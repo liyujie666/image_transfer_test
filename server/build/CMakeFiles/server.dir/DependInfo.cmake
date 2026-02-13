@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/ffmpeg_utils.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/ffmpeg_utils.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/image_utils.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/image_utils.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/logger.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/logger.cpp.o"
+  "/home/liyujie/QtProjects/test_image_transfer/server/utils/mpp_utils.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/mpp_utils.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_engine.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/rpc_engine.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/rpc_service.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/rpc_service.cpp.o"
   "/home/liyujie/QtProjects/test_image_transfer/server/utils/tcp_helper.cpp" "/home/liyujie/QtProjects/test_image_transfer/server/build/CMakeFiles/server.dir/utils/tcp_helper.cpp.o"

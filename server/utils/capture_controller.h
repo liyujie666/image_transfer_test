@@ -3,6 +3,7 @@
 #include "data_type.h"
 #include "v4l2_capture.h"
 #include "ffmpeg_utils.h"
+#include "mpp_utils.h"
 #include "rpc_engine.h"
 #include <opencv2/opencv.hpp>
 #include <vector>
@@ -31,9 +32,11 @@ public:
 private:
     int capture_single_by_opencv(cv::Mat& src_frame);
     int capture_single_by_v4l2(cv::Mat& src_frame);
+    int capture_single_by_v4l2_dma(int& dma_fd);
     int capture_single_by_ffmpeg(cv::Mat& src_frame);
 
     int encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta);
+    int encode_by_mpp_dma(int& dma_fd, std::vector<uint8_t>& dst_frame, ImageMeta& meta);
     int encode_by_opencv(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta);
 
     std::string dev_node_;
@@ -43,6 +46,13 @@ private:
     std::unique_ptr<FFmpegUtils> ffmpeg_enc_;
     std::unique_ptr<FFmpegUtils> ffmpeg_pusher_;
     std::unique_ptr<cv::VideoCapture> opencv_cap_;
+    std::unique_ptr<mpp::MppEncoder> mpp_enc_;
+
+    // DMA
+    std::vector<uint8_t> encode_tmp_data_;          
+    int frame_counter_ = 0;                          
+    int last_dma_fd_ = -1;     
+    std::mutex encode_mutex_;  
 
     // 连续采集相关
     std::atomic<bool> is_multiple_capturing_ = false; 

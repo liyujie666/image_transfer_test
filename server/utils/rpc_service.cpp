@@ -110,6 +110,7 @@ RpcCMDResponse RpcService::handle_run(){
         if(ret < 0){
             resp.success = false;
             resp.error_msg = "Single frame capture failed";
+            break;
         }
         LOG_INFO("Single frame capture success (size: %lu bytes)", dst_frame.size());
         resp.success = true;
@@ -197,9 +198,6 @@ RpcCMDResponse RpcService::handle_stop(){
         cap_controller_->stop_capture_multiple();
         
         is_capturing_ = false;
-        if (capture_thread_.joinable()) {
-            capture_thread_.join();
-        }
     }
     cap_controller_->stop_rtsp_pusher();
     cap_controller_->release();
@@ -217,9 +215,6 @@ int RpcService::close(){
     if (is_capturing_) {
         cap_controller_->stop_capture_multiple();
         is_capturing_ = false;
-        if (capture_thread_.joinable()) {
-            capture_thread_.join();
-        }
     }
     if (cap_controller_) {
         cap_controller_->release();

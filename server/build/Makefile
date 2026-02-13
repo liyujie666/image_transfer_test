@@ -304,6 +304,33 @@ utils/logger.cpp.s:
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/logger.cpp.s
 .PHONY : utils/logger.cpp.s
 
+utils/mpp_utils.o: utils/mpp_utils.cpp.o
+
+.PHONY : utils/mpp_utils.o
+
+# target to build an object file
+utils/mpp_utils.cpp.o:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_utils.cpp.o
+.PHONY : utils/mpp_utils.cpp.o
+
+utils/mpp_utils.i: utils/mpp_utils.cpp.i
+
+.PHONY : utils/mpp_utils.i
+
+# target to preprocess a source file
+utils/mpp_utils.cpp.i:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_utils.cpp.i
+.PHONY : utils/mpp_utils.cpp.i
+
+utils/mpp_utils.s: utils/mpp_utils.cpp.s
+
+.PHONY : utils/mpp_utils.s
+
+# target to generate assembly for a file
+utils/mpp_utils.cpp.s:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/utils/mpp_utils.cpp.s
+.PHONY : utils/mpp_utils.cpp.s
+
 utils/rpc_engine.o: utils/rpc_engine.cpp.o
 
 .PHONY : utils/rpc_engine.o
@@ -467,6 +494,9 @@ help:
 	@echo "... utils/logger.o"
 	@echo "... utils/logger.i"
 	@echo "... utils/logger.s"
+	@echo "... utils/mpp_utils.o"
+	@echo "... utils/mpp_utils.i"
+	@echo "... utils/mpp_utils.s"
 	@echo "... utils/rpc_engine.o"
 	@echo "... utils/rpc_engine.i"
 	@echo "... utils/rpc_engine.s"

@@ -32,6 +32,10 @@ int CaptureController::init_devices()
         v4l2_cap_ = std::make_unique<V4L2Capture>(dev_node_,cur_config_.width,cur_config_.height);
         if(!v4l2_cap_->init()) return -1;
         break;
+    case CaptureDevice::V4L2_DMA:
+        v4l2_cap_ = std::make_unique<V4L2Capture>(dev_node_,cur_config_.width,cur_config_.height,true);
+        if(!v4l2_cap_->init()) return -1;
+        break;
     case CaptureDevice::OPENCV:
         opencv_cap_ = std::make_unique<cv::VideoCapture>(dev_node_,cv::CAP_V4L2);
         if(!opencv_cap_->isOpened()){
@@ -70,6 +74,19 @@ int CaptureController::init_encoders(){
         if(ffmpeg_enc_->init_encoder(params) < 0) return -1;
         break;
     }
+
+    case EncodeType::MPP_DMA:{
+        mpp_enc_ = std::make_unique<mpp::MppEncoder>();
+        if(mpp_enc_->init(cur_config_.width,cur_config_.height,cur_config_.fps,mpp::MppCodecType::JPEG) < 0) return -1;
+        
+        mpp_enc_->setEncodeCallback([this](const uint8_t* data, size_t size, int frame_count, bool is_key){
+            std::lock_guard<std::mutex> lock(encode_mutex_);
+            encode_tmp_data_.clear();
+            encode_tmp_data_.assign(data, data + size);
+        });
+        frame_counter_ = 0;
+        break;
+    }
     case EncodeType::OPENCV:{
         break;
     }
@@ -85,13 +102,15 @@ int CaptureController::init_encoders(){
 int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, ImageMeta& meta)
 {
     cv::Mat src_frame;
-    int ret;
+    int dma_fd = -1;
 
     // 采集
     switch (cur_config_.cap_device)
     {
     case CaptureDevice::V4L2:
         if(capture_single_by_v4l2(src_frame) < 0) return -1;break;
+    case CaptureDevice::V4L2_DMA:
+        if(capture_single_by_v4l2_dma(dma_fd) < 0) return -1;break;
     case CaptureDevice::OPENCV:
         if(capture_single_by_opencv(src_frame) < 0) return -1;break;
     case CaptureDevice::FFMPEG:
@@ -107,6 +126,8 @@ int CaptureController::capture_frame_single(std::vector<uint8_t>& dst_frame, Ima
     {
     case EncodeType::FFMPEG:
         if(encode_by_ffmpeg(src_frame,dst_frame,meta) < 0) return -1;break;
+    case EncodeType::MPP_DMA:
+        if(encode_by_mpp_dma(dma_fd,dst_frame,meta) < 0) return -1;break;
     case EncodeType::OPENCV:
         if(encode_by_opencv(src_frame,dst_frame,meta) < 0) return -1;break;
     default:
@@ -243,6 +264,17 @@ int CaptureController::capture_single_by_v4l2(cv::Mat& src_frame){
 
     return 0;
 }
+
+int CaptureController::capture_single_by_v4l2_dma(int& dma_fd){
+    if(!v4l2_cap_) return -1;
+
+    if(!v4l2_cap_->captureFrame(dma_fd)){
+        LOG_ERROR("Failed to capture frame by V4L2_DMA");
+        return -1;
+    }
+
+    return 0;
+}
 int CaptureController::capture_single_by_ffmpeg(cv::Mat& src_frame){
     if(!ffmpeg_cap_) return -1;
 
@@ -324,6 +356,50 @@ int CaptureController::encode_by_ffmpeg(const cv::Mat& src_frame,std::vector<uin
 
     return -1;
 
+}
+
+int CaptureController::encode_by_mpp_dma(int& dma_fd, std::vector<uint8_t>& dst_frame, ImageMeta& meta){
+    if (!mpp_enc_ || dma_fd < 0) {
+        LOG_ERROR("MPP编码器未初始化或DMA fd无效（fd=%d）", dma_fd);
+        return -1;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(encode_mutex_);
+        encode_tmp_data_.clear();
+    }
+
+    mpp_enc_->encode_dma(dma_fd,++frame_counter_);
+
+    int retry = 0;
+    const int max_retry = 10;
+    const int retry_delay_us = 1000; // 1ms
+    while (retry < max_retry) {
+        std::lock_guard<std::mutex> lock(encode_mutex_);
+        if (!encode_tmp_data_.empty()) {
+            break;
+        }
+        retry++;
+        usleep(retry_delay_us);
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(encode_mutex_);
+        if (encode_tmp_data_.empty()) {
+            LOG_ERROR("MPP DMA编码失败，未获取到编码数据（fd=%d，帧%d）", dma_fd, frame_counter_);
+            return -1;
+        }
+
+        // 填充输出数据和元信息
+        dst_frame = std::move(encode_tmp_data_);
+        meta.cols = cur_config_.width;
+        meta.rows = cur_config_.height;
+        meta.comp_data_len = dst_frame.size();
+        meta.is_compressed = true;
+    }
+
+    LOG_DEBUG("MPP DMA编码成功：帧%d，大小%d字节", frame_counter_, dst_frame.size());
+    return 0;
 }
 
 int CaptureController::encode_by_opencv(const cv::Mat& src_frame,std::vector<uint8_t>& dst_frame, ImageMeta& meta){
